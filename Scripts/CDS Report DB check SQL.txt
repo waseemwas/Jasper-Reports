@@ -1,0 +1,38 @@
+DECLARE @fromDate DATETIME = '08/01/2025'
+DECLARE @ToDate DATETIME = '08/31/2025'
+
+SELECT ISNULL(wfHistory.ReviewDate, @ToDate) AS [DATE],u.FullName, s.SiteName AS StudyName, sm.ClientName AS CustomerName, ss.[Billing.JobNumber] AS JobNumber,
+ISNULL(wlog.QC1Claimed, 0) QC1Claimed , wfHistory.QC1Approved, wfHistory.QC1Clarification, wfHistory.QC1Rejected,
+ISNULL(wlog.QC2Claimed, 0) QC2Claimed, wfHistory.QC2Approved, wfHistory.QC2Clarification, wfHistory.QC2Rejected
+FROM dbo.[Site] s
+INNER JOIN dbo.SiteMetadata sm ON sm.SiteId = s.SiteId
+LEFT JOIN dbo.SiteSettings ss ON ss.SiteId = s.SiteId
+LEFT JOIN (
+SELECT wh.SiteId, wh.ReviewerUserId , CAST(ReviewDate AS DATE) AS ReviewDate,
+SUM (CASE WHEN wst.StageNumber = 1 AND ws.SystemName = 'Approved' THEN 1 ELSE 0 END) AS QC1Approved,
+SUM (CASE WHEN wst.StageNumber = 1 AND ws.SystemName = 'Not Approved' THEN 1 ELSE 0 END) AS QC1Rejected,
+SUM (CASE WHEN wst.StageNumber = 1 AND ws.SystemName = 'Clarification' THEN 1 ELSE 0 END) AS QC1Clarification,
+SUM (CASE WHEN wst.StageNumber = 2 AND ws.SystemName = 'Approved' THEN 1 ELSE 0 END) AS QC2Approved,
+SUM (CASE WHEN wst.StageNumber = 2 AND ws.SystemName = 'Not Approved' THEN 1 ELSE 0 END) AS QC2Rejected,
+SUM (CASE WHEN wst.StageNumber = 2 AND ws.SystemName = 'Clarification' THEN 1 ELSE 0 END) AS QC2Clarification
+FROM dbo.WorkflowHistory wh
+INNER JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wh.WorkflowStatusId AND ws.SiteId = wh.SiteId AND ws.SystemName IN ('Approved','Not Approved', 'Clarification')
+INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wh.WorkflowStageId
+WHERE CAST(wh.ReviewDate AS DATE) BETWEEN @fromDate AND @ToDate
+GROUP BY wh.SiteId, wh.ReviewerUserId, CAST(wh.ReviewDate AS DATE)
+) AS wfHistory ON wfHistory.SiteId = s.SiteId
+LEFT JOIN (
+SELECT wl.SiteId, wl.CurrentReviewerId,
+SUM (CASE WHEN wst.StageNumber = 1 THEN 1 ELSE 0 END) AS QC1Claimed,
+SUM (CASE WHEN wst.StageNumber = 2 THEN 1 ELSE 0 END) AS QC2Claimed
+FROM dbo.WorkflowLog wl
+INNER JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.SiteId = wl.SiteId
+INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId
+WHERE ws.SystemName = 'Claimed'
+GROUP BY wl.SiteId, wl.CurrentReviewerId
+) AS wLog ON wLog.SiteId = s.SiteId AND wfHistory.ReviewerUserId = wLog.CurrentReviewerId
+INNER JOIN dbo.[User] u ON u.UserId = ISNULL(wfHistory.ReviewerUserId, wLog.CurrentReviewerId)
+WHERE sm.ClientType = 'Services' -- and sm.clientName='Horama' --and s.siteid=2177 -- and u.FullName='Shrikrishna Suryawanshi'
+ORDER BY u.FullName, wfHistory.ReviewDate --, s.SiteName
+
+--WHERE CDSReportStatus = 'Active'

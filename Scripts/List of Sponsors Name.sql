@@ -1,0 +1,1 @@
+EXEC [dbo].[Reports_Jr_Sponsors] @SiteId = 1,  @UserId = 2, @ReportMode = 1
