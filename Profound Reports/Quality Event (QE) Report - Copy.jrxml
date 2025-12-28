@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Quality Event (QE) Report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d21b1917-7d37-4af0-91c7-3dfdb3d7b92c">
+	<style name="TableLabel" forecolor="#5D6982" hTextAlign="Left" vTextAlign="Top" fontName="Arial" fontSize="11" isBold="true">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box topPadding="5">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBody" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="12">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBodyInner" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="12">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBodyImpact" forecolor="#1972AA" hTextAlign="Left" vTextAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="12" isBold="true">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBodyHtml" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" markup="html" isBlankWhenNull="true" fontName="Arial" fontSize="12">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableCheckboxBody" forecolor="#1F2430" hTextAlign="Center" vTextAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="14">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="SubTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="16" isBold="true"/>
+	<style name="MainTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="20" isBold="true"/>
+	<style name="SubSectioniTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="14" isBold="true"/>
+	<style name="BodyText" forecolor="#4A5060" hTextAlign="Justified" vTextAlign="Top" markup="html" fontName="Arial" fontSize="14"/>
+	<subDataset name="ActionItems" whenResourceMissingType="Empty" uuid="147bbd85-cb77-49d6-b182-251d3619ecd1">
+		<parameter name="TOPIC_ID" class="java.lang.Integer">
+			<parameterDescription><![CDATA[Topic ID used as Incident ID filter]]></parameterDescription>
+		</parameter>
+		<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+		<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[Exec [dbo].[Reports_Records_Dynamic]
+						@SiteId = $P{LoggedInUserAttribute_SITE_ID},
+						@UserId = $P{LoggedInUserAttribute_USER_ID},
+						@RecordType= 'ActionItem',
+						@ParentRecordId = $P{TOPIC_ID},
+						@FieldListing= '[$$Report$$_$$RecordName$$],[TopicId], [$Id$], [$$StatusName$$]']]>
+		</queryString>
+		<field name="$$Report$$_$$RecordName$$" class="java.lang.String"/>
+		<field name="TopicId" class="java.lang.Integer"/>
+		<field name="$Id$" class="java.lang.String"/>
+		<field name="$$StatusName$$" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Assessment" whenResourceMissingType="Empty" uuid="d36b166f-bb89-4ad7-a03b-91f9aa5e8a5e">
+		<parameter name="TOPIC_ID" class="java.lang.Integer">
+			<parameterDescription><![CDATA[Assessment filter]]></parameterDescription>
+		</parameter>
+		<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+		<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[Exec [dbo].[Reports_Records_Dynamic]
+						@SiteId = $P{LoggedInUserAttribute_SITE_ID},
+						@UserId = $P{LoggedInUserAttribute_USER_ID},
+						@SubFormType = 'Assessment',
+						@RecordId = $P{TOPIC_ID},
+						@FieldListing = '[$$Report$$_$$ParentRecordId$$],[TopicId], [$$Report$$_$$SubFormName$$],[$$Report$$_$$RecordTopicType$$], [QAReviewComplete]']]>
+		</queryString>
+		<field name="$$Report$$_$$RecordName$$" class="java.lang.String"/>
+		<field name="TopicId" class="java.lang.Integer"/>
+		<field name="$Id$" class="java.lang.String"/>
+		<field name="DateofAssessment" class="java.lang.String"/>
+		<field name="QECategory" class="java.lang.String"/>
+		<field name="$$ImpactName$$" class="java.lang.String"/>
+		<field name="ImmediateCorrectionsPerformed" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Investigation" uuid="39ba8bc8-fdbd-4f31-91df-6e97038559aa">
+		<parameter name="TOPIC_ID" class="java.lang.Integer">
+			<parameterDescription><![CDATA[Topic ID used as Incident ID filter]]></parameterDescription>
+		</parameter>
+		<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+		<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[Exec [dbo].[Reports_SubForms_Dynamic]
+						@SiteId = $P{LoggedInUserAttribute_SITE_ID},
+						@UserId = $P{LoggedInUserAttribute_USER_ID},
+						@SubFormType = 'QualityApproval',
+						@RecordId = $P{TOPIC_ID},
+						@FieldListing = '[$$Report$$_$$ParentRecordId$$],[TopicId], [$$Report$$_$$SubFormName$$],[$$Report$$_$$RecordTopicType$$],[$$SectionStatusName$$],[QualityReviewComplete],[$QAFeedback$]']]>
+		</queryString>
+		<field name="$$Report$$_$$ParentRecordId$$" class="java.lang.Integer"/>
+		<field name="TopicId" class="java.lang.Integer"/>
+		<field name="$$Report$$_$$SubFormName$$" class="java.lang.String"/>
+		<field name="$$Report$$_$$RecordTopicType$$" class="java.lang.String"/>
+		<field name="QualityReviewComplete" class="java.lang.String"/>
+		<field name="$QAFeedback$" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="QualityReview" whenResourceMissingType="Empty" uuid="ea3b78dc-24cb-4c02-98fa-a6f7651563b1">
+		<parameter name="TOPIC_ID" class="java.lang.Integer">
+			<parameterDescription><![CDATA[Topic ID used as Incident ID filter]]></parameterDescription>
+		</parameter>
+		<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+		<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+		<parameter name="SubFormFilter" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[Exec [dbo].[Reports_SubForms_Dynamic]
+						@SiteId = $P{LoggedInUserAttribute_SITE_ID},
+						@UserId = $P{LoggedInUserAttribute_USER_ID},
+						@SubFormType = 'QualityApproval',
+						@RecordId = $P{TOPIC_ID},
+						@FieldListing = '[$$Report$$_$$ParentRecordId$$],[TopicId], [$$Report$$_$$SubFormName$$],[$$Report$$_$$RecordTopicType$$], [$QAFeedback$]']]>
+		</queryString>
+		<field name="$$Report$$_$$ParentRecordId$$" class="java.lang.Integer"/>
+		<field name="TopicId" class="java.lang.Integer"/>
+		<field name="$$Report$$_$$SubFormName$$" class="java.lang.String"/>
+		<field name="$$Report$$_$$RecordTopicType$$" class="java.lang.String"/>
+		<field name="$QAFeedback$" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="LOGO" class="java.awt.Image"/>
+	<parameter name="TOPIC_ID" class="java.lang.Integer">
+		<parameterDescription><![CDATA[Topic ID used as Incident ID filter]]></parameterDescription>
+	</parameter>
+	<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+	<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Exec [dbo].[Reports_Records_Dynamic]
+						@SiteId = $P{LoggedInUserAttribute_SITE_ID},
+						@UserId = $P{LoggedInUserAttribute_USER_ID},
+						@RecordType= 'Incident',
+						@RecordId = $P{TOPIC_ID},
+						@FieldListing='[TopicId],[$Id$], [$Title$],[$$TypeName$$],[$DueDate$],[$$TeamName$$], [$$StatusName$$], [$StatusDate$], [QEShortDescription],[$$CreatedDate$$],[$AwarenessDate$],[$ReportedOn$],[$$ReporterName$$], [$Description$], [Wastheeventaplannednoncompliance],[IstheEventaNoncompliancetoRegulations],[RelatedRegulations], [RelatedPolicySOPorWIN], [DoesitneedtobereportedtoanIRB], [OrganizationresponsibleforIRBreporting], [Isthiseventrelatedtoacustomercomplaint], [Customer name required],[CustomerName], [DateCustomerComplaintReceived],[Isthiseventrelatedtoastudy],[Sponsor],[ProtocolNumber],[Istheeventrelatedtoasite],[RelatedSiteName],[TestYesNo],[Checkallitemsimpactedbytheevent],[QECategory],[$$ImpactName$$],[ImmediateCorrectionsPerformed]']]>
+	</queryString>
+	<field name="$Title$" class="java.lang.String"/>
+	<field name="$$TypeName$$" class="java.lang.String"/>
+	<field name="$DueDate$" class="java.sql.Date"/>
+	<field name="$$TeamName$$" class="java.lang.String"/>
+	<field name="$$StatusName$$" class="java.sql.Date"/>
+	<field name="$StatusDate$" class="java.sql.Date"/>
+	<field name="QEShortDescription" class="java.lang.String"/>
+	<field name="$Description$" class="java.lang.String"/>
+	<field name="Wastheeventaplannednoncompliance" class="java.lang.String"/>
+	<field name="IstheEventaNoncompliancetoRegulations" class="java.lang.String"/>
+	<field name="RelatedRegulations" class="java.lang.String"/>
+	<field name="Isthisrelatedtoapolicyorprocedure" class="java.lang.Integer"/>
+	<field name="RelatedPolicySOPorWIN" class="java.lang.String"/>
+	<field name="DoesitneedtobereportedtoanIRB" class="java.lang.String"/>
+	<field name="OrganizationresponsibleforIRBreporting" class="java.lang.String"/>
+	<field name="Isthiseventrelatedtoacustomercomplaint" class="java.lang.String"/>
+	<field name="CustomerName" class="java.lang.String"/>
+	<field name="DateCustomerComplaintReceived" class="java.sql.Date"/>
+	<field name="Isthiseventrelatedtoastudy" class="java.lang.String"/>
+	<field name="Sponsor" class="java.lang.String"/>
+	<field name="ProtocolNumber" class="java.lang.String"/>
+	<field name="Istheeventrelatedtoasite" class="java.lang.String"/>
+	<field name="RelatedSiteName" class="java.lang.String"/>
+	<field name="TestYesNo" class="java.lang.String"/>
+	<field name="Checkallitemsimpactedbytheevent" class="java.lang.String"/>
+	<field name="QECategory" class="java.lang.String"/>
+	<field name="$$ImpactName$$" class="java.lang.String"/>
+	<field name="ImmediateCorrectionsPerformed" class="java.lang.String"/>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<textField pattern="dd MMM yyyyy">
+				<reportElement x="430" y="0" width="120" height="12" uuid="b1b8b70c-4319-4b74-a63a-3ff4320e55f4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="728" splitType="Stretch">
+			<textField>
+				<reportElement style="TableBody" x="200" y="30" width="350" height="25" uuid="123be4a0-948f-42e9-8341-fdd05d075511"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{$Title$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="30" width="200" height="25" uuid="2e7f8da4-c055-41a0-a101-90a79dc75cbf"/>
+				<text><![CDATA[Generated Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="55" width="200" height="25" uuid="0e217d83-539f-4a3a-a4ff-1556b319777f"/>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="55" width="350" height="25" uuid="6b17083c-d58a-4f43-a2f7-11705efaaef2"/>
+				<textFieldExpression><![CDATA[$F{$$TypeName$$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="80" width="200" height="25" uuid="b54157fc-295f-47d1-90ed-da0dd450b9be"/>
+				<text><![CDATA[Due Date]]></text>
+			</staticText>
+			<textField pattern="dd MMM yyyyy">
+				<reportElement style="TableBody" x="200" y="80" width="350" height="25" uuid="99c0475e-8027-4b14-b0cc-2fba02c4de9b"/>
+				<textFieldExpression><![CDATA[$F{$DueDate$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="105" width="200" height="25" uuid="39498059-024a-4ec6-b1e9-9d26f70c99b3"/>
+				<text><![CDATA[Team]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="105" width="350" height="25" uuid="86d9297e-adc5-4e58-8f00-c0a521fd0247"/>
+				<textFieldExpression><![CDATA[$F{$$TeamName$$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="130" width="200" height="25" uuid="a9849d04-82ae-4b89-a84c-3d16e7594349"/>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="130" width="350" height="25" uuid="966b3cb1-4749-4d9a-bf73-a08b53ae5df6"/>
+				<textFieldExpression><![CDATA[$F{$$StatusName$$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="155" width="200" height="25" uuid="4bd6b760-1245-470f-9918-29b8f4f9b1ab"/>
+				<text><![CDATA[Status Date]]></text>
+			</staticText>
+			<textField pattern="dd MMM yyyyy">
+				<reportElement style="TableBody" x="200" y="155" width="350" height="25" uuid="ca4ce79c-b55e-4a10-9919-4715acb1b050"/>
+				<textFieldExpression><![CDATA[$F{$StatusDate$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="180" width="200" height="25" uuid="3d57bd13-a786-4f53-99ed-19d4856b1eb5"/>
+				<text><![CDATA[Event Short Description]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="180" width="350" height="25" uuid="976e5bb9-6bce-482f-91c7-aec720ca2cec"/>
+				<textFieldExpression><![CDATA[$F{QEShortDescription}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="MainTitle" x="0" y="0" width="550" height="30" uuid="fde39e95-0d09-4841-83fb-e7e7d2923292"/>
+				<text><![CDATA[Quality Event (QE) Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="205" width="200" height="25" uuid="6cbbac61-dabd-4441-9b4d-deb18d5e7b71"/>
+				<text><![CDATA[Event Summary]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="205" width="350" height="25" uuid="8a1bebd8-898b-416e-9a1a-6766e43dfb92"/>
+				<textFieldExpression><![CDATA[$F{$Description$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="230" width="200" height="25" uuid="dd2630d9-861e-4696-8f44-6c4b1eedf806"/>
+				<text><![CDATA[Was the event a planned non-compliance?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="230" width="350" height="25" uuid="cb6266e8-9fdd-41c3-be16-33215fbb75cc"/>
+				<textFieldExpression><![CDATA[$F{Wastheeventaplannednoncompliance}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="255" width="200" height="25" uuid="c32dd792-e3c0-4140-a29b-a2529c7fef4b"/>
+				<text><![CDATA[Is the event a noncompliance to regulations?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="255" width="350" height="25" uuid="4829f7cb-abb3-46d7-95fc-5e8aba2f186c"/>
+				<textFieldExpression><![CDATA[$F{IstheEventaNoncompliancetoRegulations}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="280" width="200" height="25" uuid="2f2dc3c1-4958-4e53-8863-75a11cbe104d"/>
+				<text><![CDATA[Related Regulation(s)]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="280" width="350" height="25" uuid="070aca15-341e-4210-b7ef-b118826af670"/>
+				<textFieldExpression><![CDATA[$F{RelatedRegulations}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="305" width="200" height="25" uuid="77b943bc-ee57-4515-b74f-4659311d343e"/>
+				<text><![CDATA[Is the event related to a Policy, SOP, or WIN?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="305" width="350" height="25" uuid="351d721d-b72e-4547-84a3-d3d43b26c268"/>
+				<textFieldExpression><![CDATA[$F{Isthisrelatedtoapolicyorprocedure}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="330" width="200" height="25" uuid="0fa375ae-213e-4c73-aee5-2e1761cf8860"/>
+				<text><![CDATA[Related Policy, SOP, or WIN]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="330" width="350" height="25" uuid="3e9ec0d0-5476-43be-bbf1-c2acaa686d5c"/>
+				<textFieldExpression><![CDATA[$F{RelatedPolicySOPorWIN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="355" width="200" height="25" uuid="a5c22d2b-727a-4a0a-b160-727450dbcf59"/>
+				<text><![CDATA[Does it need to be reported to an IRB?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="355" width="350" height="25" uuid="22113401-11fe-4254-a33d-03a8a5564de0"/>
+				<textFieldExpression><![CDATA[$F{DoesitneedtobereportedtoanIRB}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="1" y="380" width="200" height="25" uuid="8cfa1e57-afff-4cc4-9302-27fe24ed8c44"/>
+				<text><![CDATA[Organization responsible for IRB reporting?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="380" width="350" height="25" uuid="40b9283b-e997-4bb5-9d0a-f7cea87bc58a"/>
+				<textFieldExpression><![CDATA[$F{OrganizationresponsibleforIRBreporting}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="1" y="405" width="200" height="25" uuid="7ab88d1d-ac81-4bf6-baa1-05b9b74c0b4e"/>
+				<text><![CDATA[Is this event related to a customer complaint?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="405" width="350" height="25" uuid="cce1bd95-bde5-4a3d-b8bc-4db455e18a44"/>
+				<textFieldExpression><![CDATA[$F{Isthiseventrelatedtoacustomercomplaint}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="430" width="200" height="25" uuid="2e623413-bf5c-489f-a6e1-1cc0f19c6dd5"/>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="430" width="350" height="25" uuid="7127c8f4-559b-4177-a774-6c70b703bf2d"/>
+				<textFieldExpression><![CDATA[$F{CustomerName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="455" width="200" height="25" uuid="0533faa7-1587-4aad-87e4-fef89f6e16f6"/>
+				<text><![CDATA[Date Customer Complaint Received]]></text>
+			</staticText>
+			<textField pattern="dd MMM yyyyy">
+				<reportElement style="TableBody" x="200" y="455" width="350" height="25" uuid="e56bfe2e-d523-450c-b76f-d295f90be007"/>
+				<textFieldExpression><![CDATA[$F{DateCustomerComplaintReceived}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="480" width="200" height="25" uuid="6bfa9d00-3d38-4b92-ae8e-fab6f210a0f9"/>
+				<text><![CDATA[Is this event related to a study?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="480" width="350" height="25" uuid="f6d09610-9679-47cd-93ac-d422d86b2557"/>
+				<textFieldExpression><![CDATA[$F{Isthiseventrelatedtoastudy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="505" width="200" height="25" uuid="aca5bbdf-1cfc-457c-a19b-9a3396385f2d"/>
+				<text><![CDATA[Sponsor]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="505" width="350" height="25" uuid="7ed42b19-62e1-46c1-830f-4410edb671d3"/>
+				<textFieldExpression><![CDATA[$F{Sponsor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="530" width="200" height="25" uuid="150542c2-4240-42b2-80bb-5d51670e8f74"/>
+				<text><![CDATA[Protocol Number]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="530" width="350" height="25" uuid="7480f09e-6e13-4fc3-b197-ccc474c2c29d"/>
+				<textFieldExpression><![CDATA[$F{ProtocolNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="555" width="200" height="25" uuid="6f668a8e-d5d4-49a9-82bf-4bdd86663f2b"/>
+				<text><![CDATA[Is the event related to a site?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="555" width="350" height="25" uuid="5380f546-1893-498f-aa5e-79665b618e21"/>
+				<textFieldExpression><![CDATA[$F{Istheeventrelatedtoasite}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="580" width="200" height="25" uuid="222e54fe-f3de-4bc1-86e2-e07ce1ecac15"/>
+				<text><![CDATA[Related Site Name]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="580" width="350" height="25" uuid="f377dde5-ad14-4f08-9e7d-69118fd5b5f1"/>
+				<textFieldExpression><![CDATA[$F{RelatedSiteName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="2" y="605" width="200" height="25" uuid="f0776797-6e1d-4ef0-85e2-9d28e8790d40"/>
+				<text><![CDATA[Does the event need to be reported to the sponsor?]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="605" width="350" height="25" uuid="4ccec470-b6f9-4d67-93e7-614dbe1dffa7"/>
+				<textFieldExpression><![CDATA[$F{TestYesNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="3" y="630" width="200" height="25" uuid="fe98d3d2-c954-4a3b-a740-d7b50301971f"/>
+				<text><![CDATA[Select all items impacted by the event]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="200" y="630" width="350" height="25" uuid="05e8d25c-2b32-4ef6-ae97-3ac9cbe403b7"/>
+				<textFieldExpression><![CDATA[$F{Checkallitemsimpactedbytheevent}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="180">
+			<textField>
+				<reportElement style="TableBody" x="139" y="35" width="411" height="40" uuid="b6d69bc7-065d-4dd8-ae3d-7e0041ae92b1"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{QECategory}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="100" width="139" height="40" uuid="2a077124-76dc-428c-9796-0e8466c9c9bb"/>
+				<text><![CDATA[Immediate Corrections Performed]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="139" y="75" width="411" height="25" uuid="37d3342c-e84e-4801-8349-05ff9b7f5f9e"/>
+				<textFieldExpression><![CDATA[$F{$$ImpactName$$}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="35" width="139" height="40" uuid="571e273e-02f7-4198-ac51-539ca1f32dff"/>
+				<text><![CDATA[QE Category]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="TableLabel" x="0" y="75" width="139" height="25" uuid="584b2126-44ff-4c85-a014-c10917deee8c"/>
+				<text><![CDATA[Assessed Impact]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableBody" x="139" y="100" width="411" height="40" uuid="7e815e8b-f02a-42f4-83a5-03b67b5a3c7a"/>
+				<textFieldExpression><![CDATA[$F{ImmediateCorrectionsPerformed}.replaceAll("\\<.*?\\>", "")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="SubSectioniTitle" x="0" y="0" width="280" height="25" uuid="55c04047-16d9-4bdc-a148-315e944b6fa3"/>
+				<text><![CDATA[Initial Assessment]]></text>
+			</staticText>
+		</band>
+		<band height="140">
+			<componentElement>
+				<reportElement x="0" y="25" width="550" height="85" uuid="0af64754-fbe9-4dee-ad91-84fc9cb94e73"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Investigation" uuid="956df876-80a5-44cb-bfec-8c1100f27122">
+						<datasetParameter name="TOPIC_ID">
+							<datasetParameterExpression><![CDATA[$P{TOPIC_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_SITE_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_SITE_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_USER_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_USER_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="85" width="550">
+						<textField>
+							<reportElement style="TableBodyHtml" x="139" y="0" width="411" height="40" uuid="87f14929-5c4b-450b-8bee-2efc577a7538"/>
+							<textFieldExpression><![CDATA[$F{QualityReviewComplete} == null ||
+$F{QualityReviewComplete}.trim().isEmpty() ? "" : $F{QualityReviewComplete}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement style="TableLabel" x="0" y="0" width="139" height="40" uuid="c5b7d0ec-71f1-4824-93e4-03bb3d56159e"/>
+							<text><![CDATA[QA Review Complete?]]></text>
+						</staticText>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement style="SubSectioniTitle" x="0" y="0" width="280" height="25" uuid="2f8b51e2-009d-40cc-8042-6132dcb0ead4"/>
+				<text><![CDATA[Quality Triage]]></text>
+			</staticText>
+		</band>
+		<band height="212">
+			<componentElement>
+				<reportElement x="0" y="6" width="550" height="84" uuid="7933128b-618a-4908-9ad9-941a49cef89a"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Investigation" uuid="e879905e-878f-40d6-89b2-43dcb33f154f">
+						<datasetParameter name="TOPIC_ID">
+							<datasetParameterExpression><![CDATA[$P{TOPIC_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_SITE_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_SITE_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_USER_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_USER_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="84" width="550">
+						<textField>
+							<reportElement style="TableBodyHtml" x="139" y="0" width="411" height="40" uuid="7c67414c-58f6-4bba-bc07-e6cf56626e68"/>
+							<textFieldExpression><![CDATA[$F{QualityReviewComplete} == null ||
+$F{QualityReviewComplete}.trim().isEmpty() ? "" : $F{QualityReviewComplete}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement style="TableLabel" x="0" y="0" width="139" height="40" uuid="456b7258-5e83-4b23-b213-79549796bba8"/>
+							<text><![CDATA[Review Complete]]></text>
+						</staticText>
+						<staticText>
+							<reportElement style="TableLabel" x="5" y="40" width="134" height="40" uuid="3bf9cbf9-e032-495e-8eaf-9d830b1c4a98"/>
+							<text><![CDATA[Review Feedback]]></text>
+						</staticText>
+						<textField>
+							<reportElement style="TableBodyHtml" x="140" y="40" width="405" height="40" uuid="810ae4db-c6fb-4198-9154-2c300bda6ec2"/>
+							<textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement style="SubSectioniTitle" x="0" y="-20" width="550" height="25" uuid="53fd01f5-0dbf-4ce0-91d4-912c6cd09bb0"/>
+				<text><![CDATA[Reporter Assessment Approval and Functional Manager Assessment Approval ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubSectioniTitle" x="0" y="100" width="551" height="25" uuid="65f08a8c-fd5e-47c5-b800-0abba4f962f5"/>
+				<text><![CDATA[Reporter Functional Manager Assessment Approval ]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="0" y="126" width="550" height="84" uuid="4a1c9693-d9ea-4c0a-98a7-c484933a1852"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Investigation" uuid="6af0c88b-0fb0-4638-a13c-234afe32b94d">
+						<datasetParameter name="TOPIC_ID">
+							<datasetParameterExpression><![CDATA[$P{TOPIC_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_SITE_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_SITE_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="LoggedInUserAttribute_USER_ID">
+							<datasetParameterExpression><![CDATA[$P{LoggedInUserAttribute_USER_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="84" width="550">
+						<textField>
+							<reportElement style="TableBodyHtml" x="139" y="0" width="411" height="40" uuid="e7952672-fa14-4b15-9abe-5847c29e734b"/>
+							<textFieldExpression><![CDATA[$F{QualityReviewComplete} == null ||
+$F{QualityReviewComplete}.trim().isEmpty() ? "" : $F{QualityReviewComplete}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement style="TableLabel" x="0" y="0" width="139" height="40" uuid="00fc8d75-06e7-45bd-8bd5-b3d85d6babb3"/>
+							<text><![CDATA[Review Complete]]></text>
+						</staticText>
+						<staticText>
+							<reportElement style="TableLabel" x="5" y="40" width="134" height="40" uuid="de5303b7-8b83-4118-8c4f-cd0eb5d5cd56"/>
+							<text><![CDATA[Review Feedback]]></text>
+						</staticText>
+						<textField>
+							<reportElement style="TableBodyHtml" x="140" y="40" width="405" height="40" uuid="e70999d1-02e5-4b40-813d-9dac1d8d663c"/>
+							<textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+		<band height="156"/>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement x="230" y="0" width="100" height="20" forecolor="#5D6982" uuid="5f83d477-623f-479e-bece-77b036ca4bc9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMM yyyyy">
+				<reportElement x="431" y="4" width="120" height="12" uuid="23e392c1-bcd0-446c-80fb-854f5a04655d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

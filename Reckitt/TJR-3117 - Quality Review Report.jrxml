@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Quality Review Report" pageWidth="3350" pageHeight="842" orientation="Landscape" columnWidth="3310" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cedb548c-0df4-4676-a752-f860ccaa217e">
+	<property name="net.sf.jasperreports.export.html.exclude.key.KeyUpd"/>
+	<property name="net.sf.jasperreports.export.csv.exclude.key.KeyUpd"/>
+	<property name="net.sf.jasperreports.export.html.exclude.key.Logo"/>
+	<property name="net.sf.jasperreports.export.csv.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xlsx.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.csv.exclude.origin.band.3" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.report.unit.description" value="Displays the history documents (passed and failed) through the Quality Review module in TI."/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#349CDA">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" forecolor="#FFFFFF" backcolor="#4097CF" scaleImage="RetainShape" fontName="DejaVu Sans">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FCFCFC">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#BDBDBD"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="Dataset1" uuid="45f2dc73-9355-48b6-9af7-2a3b14658908">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BLRS"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+			<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getInt("USER_ID")]]></defaultValueExpression>
+		</parameter>
+		<parameter name="EventName" class="java.util.Collection" isForPrompting="false"/>
+		<parameter name="SITE_ID" class="java.lang.Long" isForPrompting="false">
+			<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getLong("SITE_ID")]]></defaultValueExpression>
+		</parameter>
+		<parameter name="EventParam" class="java.lang.String">
+			<defaultValueExpression><![CDATA["(''"+String.join("'',''",$P{EventName})+"'')"]]></defaultValueExpression>
+		</parameter>
+		<parameter name="AuditProfileName" class="java.util.Collection"/>
+		<queryString language="SQL">
+			<![CDATA[EXEC Reports_AuditDocumentsInventory
+@SiteId= $P{SITE_ID} ,
+@UserId= $P{USER_ID},
+@IncludeDeleted = 1,
+@SQLFilter = '[EventId] IN $P!{EventParam}',
+@returnFailedHistory= 1]]>
+		</queryString>
+		<field name="DocumentId" class="java.lang.String"/>
+		<field name="SubmittedBy" class="java.lang.String"/>
+		<field name="SubmittedDate" class="java.sql.Timestamp"/>
+		<field name="AuditProfileName" class="java.lang.String"/>
+		<field name="DocumentName" class="java.lang.String"/>
+		<field name="Country" class="java.lang.String"/>
+		<field name="DocumentType" class="java.lang.String"/>
+		<field name="DocumentIndexPosition" class="java.lang.String"/>
+		<field name="InvestigativeSite" class="java.lang.String"/>
+		<field name="AuditorName" class="java.lang.String"/>
+		<field name="AuditorComments" class="java.lang.String"/>
+		<field name="AuditDate" class="java.sql.Timestamp"/>
+		<field name="AuditStatusTypeName" class="java.lang.String"/>
+		<field name="AuditResponseUserName" class="java.lang.String"/>
+		<field name="AuditResponseComments" class="java.lang.String"/>
+		<field name="AuditResponseDate" class="java.sql.Timestamp"/>
+		<field name="AuditRecheckUserName" class="java.lang.String"/>
+		<field name="AuditRecheckComments" class="java.lang.String"/>
+		<field name="AuditRecheckDate" class="java.sql.Timestamp"/>
+		<field name="AuditRecheckStatusTypeName" class="java.lang.String"/>
+		<field name="Ambiguous date format" class="java.lang.String"/>
+		<field name="Blank Pages Present" class="java.lang.String"/>
+		<field name="Draft Document" class="java.lang.String"/>
+		<field name="Duplicate" class="java.lang.String"/>
+		<field name="Incomplete Documents" class="java.lang.String"/>
+		<field name="Incorrect Country" class="java.lang.String"/>
+		<field name="Incorrect Document Type" class="java.lang.String"/>
+		<field name="Incorrect Index Location" class="java.lang.String"/>
+		<field name="Incorrect Naming Convention" class="java.lang.String"/>
+		<field name="Incorrect Orientation" class="java.lang.String"/>
+		<field name="Incorrect Pagination" class="java.lang.String"/>
+		<field name="Incorrect Site" class="java.lang.String"/>
+		<field name="Incorrect Study" class="java.lang.String"/>
+		<field name="Incorrect Versioning" class="java.lang.String"/>
+		<field name="Incorrect/Incomplete Metadata" class="java.lang.String"/>
+		<field name="Missing Attachment" class="java.lang.String"/>
+		<field name="Missing Document Date" class="java.lang.String"/>
+		<field name="Missing Pages" class="java.lang.String"/>
+		<field name="PublishedBy" class="java.lang.String"/>
+		<field name="Missing Signature" class="java.lang.String"/>
+		<field name="Missing Translation (Per Translation Mgmt Plan)" class="java.lang.String"/>
+		<field name="Multiple Documents submitted as one" class="java.lang.String"/>
+		<field name="Not TMF Applicable" class="java.lang.String"/>
+		<field name="Original HC Documents Submitted in Electronic Format" class="java.lang.String"/>
+		<field name="Other - Sponsor/Study Specific" class="java.lang.String"/>
+		<field name="Pages Cut Off" class="java.lang.String"/>
+		<field name="Pages out of order" class="java.lang.String"/>
+		<field name="Poor Image Quality" class="java.lang.String"/>
+		<field name="Subject Identifier Present" class="java.lang.String"/>
+		<field name="CopiedToLinkedRoomsBy" class="java.lang.String"/>
+		<field name="IsDeleted" class="java.lang.Boolean"/>
+		<field name="DocumentStatus" class="java.lang.String"/>
+		<field name="QACategory" class="java.lang.String"/>
+		<field name="AuditGrading" class="java.lang.String"/>
+		<field name="AuditErrorTracker" class="java.lang.String"/>
+		<field name="$ContainsPHI$" class="java.lang.String"/>
+		<field name="DocumentLink" class="java.lang.String"/>
+		<field name="EventName" class="java.lang.String"/>
+		<field name="EventType" class="java.lang.String"/>
+		<field name="Document Date" class="java.sql.Timestamp"/>
+		<filterExpression><![CDATA[($P{AuditProfileName}!=null?!$P{AuditProfileName}.isEmpty()?$P{AuditProfileName}.contains( $F{AuditProfileName} ):true:true) && ($F{AuditProfileName}!=null)]]></filterExpression>
+	</subDataset>
+	<parameter name="SITE_ID" class="java.lang.Long" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getLong("SITE_ID")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getInt("USER_ID")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SITE_NAME" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getString("SITE_NAME")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AuditProfileName" class="java.util.Collection"/>
+	<parameter name="EventName" class="java.util.Collection" isForPrompting="false"/>
+	<queryString language="SQL">
+		<![CDATA[select 1 tmp]]>
+	</queryString>
+	<field name="tmp" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="3290" height="20" uuid="f6df0cf7-f7d6-4e86-9f6e-035593e68796">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SITE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy HH:mm:ss a (z) zzzz">
+				<reportElement key="KeyUpd" x="0" y="20" width="3290" height="20" uuid="e3f450f2-1a16-4a68-ac25-3df7796543ed">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiUpdatedOn"/>
+				</reportElement>
+				<box leftPadding="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss (z Z) zzzz").format(new Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="40" width="3290" height="30" uuid="96d08fe9-f40e-4f2b-86ae-f2a1c8dc923e">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quality Review Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="130" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="3290" height="120" uuid="548ad812-b88e-4ad2-a15a-c0cccc036410"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Dataset1" uuid="10145ac8-37c5-406d-acb5-f98a3d46859b">
+						<datasetParameter name="SITE_ID">
+							<datasetParameterExpression><![CDATA[$P{SITE_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="USER_ID">
+							<datasetParameterExpression><![CDATA[$P{USER_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="AuditProfileName">
+							<datasetParameterExpression><![CDATA[$P{AuditProfileName}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="EventName">
+							<datasetParameterExpression><![CDATA[$P{EventName}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:columnGroup width="5410" uuid="7fea2de3-1298-4a15-84db-6d47bfd5bc04">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [29]"/>
+						<jr:tableFooter height="30" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="0" y="0" width="5410" height="30" forecolor="#0A0A0A" backcolor="#FF5C59" uuid="9be04f26-3c99-48e6-a10e-889e54b49355">
+									<printWhenExpression><![CDATA[$V{REPORT_COUNT}==0]]></printWhenExpression>
+								</reportElement>
+								<box>
+									<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ There are no data in this study]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:column width="130" uuid="debfad99-beef-4163-994e-52682eab84a6">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="local_mesure_unitheight" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="617733a6-ed1a-40f4-b60e-33c0606e4efc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document ID]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="7b505c23-2c3d-4753-8859-27a75eabbdff"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentId}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="debfad99-beef-4163-994e-52682eab84a6">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="local_mesure_unitheight" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="617733a6-ed1a-40f4-b60e-33c0606e4efc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Date]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="ddMMMyyyy" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="7b505c23-2c3d-4753-8859-27a75eabbdff"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{Document Date}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="debfad99-beef-4163-994e-52682eab84a6">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="local_mesure_unitheight" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="617733a6-ed1a-40f4-b60e-33c0606e4efc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Type]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="7b505c23-2c3d-4753-8859-27a75eabbdff"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentType}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="140" uuid="29e7b460-f245-412b-ae87-9df1a68260a8">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="140" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="44fb2eb2-d713-4a0a-a6fd-4a27390ed290"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Generated Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="140" height="30" uuid="7b505c23-23cd-4753-8859-27a75eabbdff"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="82810c98-f980-4383-b086-026829e40854">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="aef2d7a1-1dd9-4b93-a6bd-4aa4e353880e"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Submitted On Date]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="ddMMMyyyy" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="50d8d181-0d2a-481f-9cd5-b5890f48f10e"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{SubmittedDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="140" uuid="0b4a505c-e481-4155-8bc5-ed5e9e415d63">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="140" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="605b02fa-186f-4f2e-9e33-d13d9245b19d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Status]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="140" height="30" uuid="f5a048e8-ce10-482d-8485-46a823d21eaa"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentStatus}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="300" uuid="a298bf56-28a8-4846-a795-293cfa0b90fa">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="300" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="adb75346-6a76-4dea-b70e-de873d64b734"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Index]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="300" height="30" uuid="13f057a9-0e20-4e4a-9434-7ab4833a2cc2"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentIndexPosition}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="200" uuid="82810c98-f980-4383-b086-026829e40854">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="200" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="aef2d7a1-1dd9-4b93-a6bd-4aa4e353880e"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Investigative Site Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="200" height="30" uuid="50d8d181-0d2a-481f-9cd5-b5890f48f10e"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{InvestigativeSite}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="a49cde3f-fb54-4db6-938e-4e448ec1f101">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="d55f9e55-217b-4fdd-8f4d-3df4c250298b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Country]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="0d7e5649-064b-48c9-bcf5-3889ea4d0498"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{Country}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="100" uuid="8f29fc53-0dbd-4f74-8715-6c33c5bd88d3">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="100" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="b9cacb47-e23d-4eb6-9b06-8bfaf74e09d3"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Event Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="100" height="30" uuid="ec6a2c7e-a81e-44cf-9f83-124ae744173b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{EventName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="120" uuid="3d86c3a7-a6c5-463d-bff1-e42d47bbb1db">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="0dfde3f2-5d25-4a14-9263-d6d78c5b879c"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Event Type]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="120" height="30" uuid="5baecc42-c0bc-47ed-a7e5-0c449d9c9cbc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{EventType}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="100" uuid="debfad99-beef-4163-994e-52682eab84a6">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="local_mesure_unitheight" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="100" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="617733a6-ed1a-40f4-b60e-33c0606e4efc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Is Deleted]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="100" height="30" uuid="7b505c23-2c3d-4753-8859-27a75eabbdff"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{IsDeleted}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="310" uuid="97a2768c-aa87-4163-b339-d99aac17f29d">
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="310" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="e54843c1-0fb3-4749-b28b-d5efd852b48d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Profile]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="310" height="30" uuid="4212a605-3655-43c6-bf7a-0976bff03fb1"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditProfileName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="100" uuid="ce7a729d-1a9f-4b56-be09-f98b18aa6863">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="100" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="00028aa0-4e9b-458c-9372-1e8961648f47"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Date]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField pattern="ddMMMyyyy" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="100" height="30" uuid="6e45c78c-b255-4f74-b8eb-767096b62f23"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="170" uuid="4003912a-e934-44cd-80af-1234e884996f">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="170" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="24de6f41-0207-45bf-bdfd-1668359b77e3"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Auditor Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="170" height="30" uuid="d3d97d61-c58e-4b6b-be1c-7e9473492395"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditorName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="170" uuid="abe2a0be-5675-4bc9-8c8f-baaee8bceb18">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="170" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="5c0d5c2a-5a77-477e-a0ca-a2817842e2f4"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Status]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="170" height="30" uuid="62388445-8876-4dd6-a3a8-38d3a8734331"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditStatusTypeName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="290" uuid="62198c36-f07d-48d7-bb71-b43e97338383">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="290" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="18ec114f-fdcf-40aa-a8fc-32e68cf4781f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Comments]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="290" height="30" uuid="60d1b7d7-b5d7-4f80-92d3-856dfa1e7c39"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditorComments}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="170" uuid="c73bf573-fd6b-4833-9386-7f1e3c99f3ec">
+							<property name="local_mesure_unitwidth" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="170" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="261fa629-f7e0-46ab-9d48-bbe70e0cd343"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Response Date]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="ddMMMyyyy" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="170" height="30" uuid="67c6d033-82ee-49e8-bb8a-41c0da8abfc0"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditResponseDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="330" uuid="477d3178-8f67-4208-81b6-c8436f915474">
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="330" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="4ff6d9e1-63d4-46ac-afbe-53de83230ae6"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Response User Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="330" height="30" uuid="f9be8073-bd83-4dcb-95fe-7be6683b2ed8"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditResponseUserName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="330" uuid="4d85f5ac-2506-498c-a91f-fd44d1ea4401">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="330" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="7d4179be-676c-496e-a697-75fc6d482a36"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Response comments]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="330" height="30" uuid="cc33d682-d709-417d-9aea-b31acd65600f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditResponseComments}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="140" uuid="7cbcf896-e5a7-43c5-9f77-282e1549607f">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="140" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="d07dddb5-61ab-4df0-8aff-7789c03ddeca"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Recheck Date]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="ddMMMyyyy" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="140" height="30" uuid="6b170413-544d-4ff6-a82f-e9ef02661c53"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditRecheckDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="260" uuid="1af1a5cf-73c5-488d-a7e3-6a2a4b0e0514">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="260" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="304962ea-4aec-4db6-9717-9cd861c51453"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Recheck Reviewer Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="260" height="30" uuid="1d936f73-4618-4bc2-b4eb-c903a44b54ae"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditRecheckUserName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="210" uuid="fffbf7b6-391b-4488-9cd5-e2415c8b2ee9">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="210" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="dfbb98e1-f1df-4d7f-b53f-914a1c381f3f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Recheck Status]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="210" height="30" uuid="e6c2923b-c1e7-40a1-acc5-f9fa304e28db"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditRecheckStatusTypeName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="290" uuid="bcde65ec-9ce7-4603-8e90-cfdcb999001a">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column24"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement x="0" y="0" width="290" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="77897424-d458-4795-a5f4-a90744ff37b1"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Recheck response]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="290" height="30" uuid="77ad5e7a-a92a-4e03-ac7c-581357cf4475"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditRecheckComments}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="210" uuid="0c2fa84e-fecf-4e65-b768-9d07ab3482cf">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column25"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="210" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="43003845-7f71-41fc-a546-69f3b54f6a9f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit QA Category]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="210" height="30" uuid="ee29a19e-0099-4448-968c-1b30c595c073"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{QACategory}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="07bc382e-2cd0-44fd-8d43-3a8f9a993478">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column26"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="130" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="a5838761-18b2-41d9-997f-4cc99993d874"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Grading]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="130" height="30" uuid="99474356-35fc-4b95-a078-a9f661a39e5b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditGrading}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="210" uuid="dd0e4d48-0853-4fc1-83a9-e32b9890877f">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column27"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="210" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="4126fdda-bc77-4047-8ec5-0a91cc46d352"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Responsible Party]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="210" height="30" uuid="c5562f17-c0bb-4e1e-a110-3cd535f02e0f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{AuditErrorTracker}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="170" uuid="f77cab1a-ed5a-4e63-8282-441e514cfd2c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column28"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="170" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="d0254c03-c965-482e-a8be-3d77b854f943"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Audit Contains PHI?]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="170" height="30" uuid="c5562f17-c0bb-4e1e-a110-3cd535f02e0f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{$ContainsPHI$}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="170" uuid="87892db4-7930-4c15-8709-8f689ccf9ba3">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column29"/>
+							<jr:columnHeader style="Table_CH" height="50">
+								<staticText>
+									<reportElement x="0" y="0" width="170" height="50" forecolor="#FFFFFF" backcolor="#4097CF" uuid="a9c1e0ad-f987-450a-b2c8-59cbf8648296"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="SansSerif" size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Link]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="Reference" hyperlinkTarget="Blank">
+									<reportElement x="0" y="0" width="170" height="30" forecolor="#0A2EFC" uuid="5bea587b-ec8d-4456-b722-e5a992c52366"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isUnderline="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentLink} == null ? "" : "View"]]></textFieldExpression>
+									<hyperlinkReferenceExpression><![CDATA[$F{DocumentLink} == null ? "" :$F{DocumentLink}.substring($F{DocumentLink}.indexOf("http"), $F{DocumentLink}.lastIndexOf("\">"))]]></hyperlinkReferenceExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField pattern="MM/dd/yyyy HH:mm:ss a (z) zzzz">
+				<reportElement x="0" y="0" width="530" height="20" uuid="20d3f927-1405-44d3-9e03-948bfd679345"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss a (z Z) zzzz").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2740" y="0" width="220" height="30" uuid="ff9fbf1c-a63c-4322-9e2a-75a8534e69cb"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="2960" y="0" width="330" height="30" uuid="934f39d8-0422-4790-9a40-0b4e7f96e82e"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="All Document Activity" pageWidth="1800" pageHeight="842" orientation="Landscape" columnWidth="1780" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="fb7619fa-bdf4-4eb9-bbd1-6bba65ff1400">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mssql local"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="net.sf.jasperreports.export.html.exclude.key.KeyUpd"/>
+	<property name="net.sf.jasperreports.export.csv.exclude.key.KeyUpd"/>
+	<property name="net.sf.jasperreports.export.html.exclude.key.Logo"/>
+	<property name="net.sf.jasperreports.export.csv.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xlsx.exclude.origin.band.pageFooter" value="pageFooter"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.report.unit.description" value="Activity log of all documents in the room"/>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#C1C1C1"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#68B4FC">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="70da5c4d-7c91-4f1e-86c7-16a7fb376aad">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BLRS"/>
+		<property name="net.sf.jasperreports.filters" value="[]"/>
+		<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false"/>
+		<parameter name="SITE_ID" class="java.lang.Long" isForPrompting="false"/>
+		<parameter name="USER_LIST" class="java.util.Collection" isForPrompting="false"/>
+		<parameter name="DocumentId" class="java.lang.Integer">
+			<parameterDescription><![CDATA[]]></parameterDescription>
+		</parameter>
+		<parameter name="StartDate" class="java.sql.Date"/>
+		<parameter name="EndDate" class="java.sql.Date"/>
+		<queryString>
+			<![CDATA[exec Reports_DocumentActivity 
+						@SiteId=$P{SITE_ID},
+						@UserId= $P{USER_ID},
+						@StartDate =$P{StartDate},
+						@EndDate =$P{EndDate}]]>
+		</queryString>
+		<field name="DocumentId" class="java.lang.Integer"/>
+		<field name="Title" class="java.lang.String"/>
+		<field name="DateTime" class="java.sql.Timestamp"/>
+		<field name="UserId" class="java.lang.Integer"/>
+		<field name="UserName" class="java.lang.String"/>
+		<field name="ActivityType" class="java.lang.String"/>
+		<field name="ActivityDescription" class="java.lang.String"/>
+		<field name="DocumentType" class="java.lang.String"/>
+		<field name="DocumentStatus" class="java.lang.String"/>
+		<field name="Index" class="java.lang.String"/>
+		<field name="Name" class="java.lang.String"/>
+		<field name="$$FileName$$" class="java.lang.String"/>
+		<field name="DocumentLink" class="java.lang.String"/>
+		<field name="EmailAddress" class="java.lang.String"/>
+		<sortField name="Title"/>
+		<sortField name="DateTime" order="Descending"/>
+		<variable name="Title2" class="java.lang.Integer" incrementType="Group" incrementGroup="RoomName" calculation="Count">
+			<variableExpression><![CDATA[$F{Title}]]></variableExpression>
+		</variable>
+		<filterExpression><![CDATA[$P{USER_LIST} == null || $P{USER_LIST}.isEmpty() || $P{USER_LIST}.contains($F{UserName})]]></filterExpression>
+		<group name="RoomName">
+			<groupExpression><![CDATA[$F{Title}]]></groupExpression>
+		</group>
+	</subDataset>
+	<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getInt("USER_ID")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SITE_ID" class="java.lang.Long" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getLong("SITE_ID")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SITE_NAME" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getString("SITE_NAME")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DocumentId" class="java.lang.Integer">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="USER_LIST" class="java.util.Collection" isForPrompting="false"/>
+	<parameter name="StartDate" class="java.sql.Date">
+		<defaultValueExpression><![CDATA[new java.sql.Date(
+            new java.util.Date().getTime() - (30L * 24 * 60 * 60 * 1000)
+        )]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EndDate" class="java.sql.Date">
+		<defaultValueExpression><![CDATA[TODAY( )]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[Select 1 tmp]]>
+	</queryString>
+	<field name="tmp" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="75" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="50" width="1670" height="20" uuid="068e7043-c400-4263-8f29-a92c04a1abb9">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.export.html.class" value="origamiReportTitle"/>
+					<property name="net.sf.jasperreports.export.xls.break.after.row" value="true"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[All Document Activity]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="1670" height="20" uuid="8cc1fbe0-027f-46c5-b8ca-72ceabf9fef6">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.export.html.class" value="origamiSiteName"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SITE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy HH:mm:ss a (z) zzzz">
+				<reportElement key="KeyUpd" x="0" y="30" width="1670" height="20" uuid="80fc32fa-c71b-4f14-9326-3d955592ca0a">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiUpdatedOn"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box leftPadding="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss (z Z) zzzz").format(new Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="147" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<componentElement>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="1670" height="100" isRemoveLineWhenBlank="true" uuid="c99fbcc5-ea3a-4727-8d1a-aeeaceac5b5e">
+					<printWhenExpression><![CDATA[(($P{EndDate}.getTime() - $P{StartDate}.getTime()) <= 90L * 24 * 60 * 60 * 1000)]]></printWhenExpression>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="Dataset1" uuid="edc6a729-4dda-42af-98f0-91a887906ce8">
+						<datasetParameter name="SITE_ID">
+							<datasetParameterExpression><![CDATA[$P{SITE_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="USER_ID">
+							<datasetParameterExpression><![CDATA[$P{USER_ID}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="DocumentId">
+							<datasetParameterExpression><![CDATA[$P{DocumentId}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="USER_LIST">
+							<datasetParameterExpression><![CDATA[$P{USER_LIST}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="StartDate">
+							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="EndDate">
+							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:columnGroup width="1670" uuid="2185450c-0058-4825-9fe4-79b8010dceb5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [8]"/>
+						<jr:tableFooter height="40" rowSpan="1">
+							<staticText>
+								<reportElement mode="Opaque" x="0" y="0" width="1670" height="40" forecolor="#0A0A0A" backcolor="#FF5C59" uuid="f1ed9819-fcad-4e7f-a06f-2d190b43770b">
+									<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+									<printWhenExpression><![CDATA[$V{REPORT_COUNT}==0]]></printWhenExpression>
+								</reportElement>
+								<box>
+									<topPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="2.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<text><![CDATA[There are no documents in this study.]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:column width="400" uuid="96cd0e1d-cb5a-4082-ad6a-13b36c30d9f1">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement style="Table_CH" mode="Opaque" x="0" y="0" width="400" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="d212e966-1853-40b0-b963-88dba73d9856"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Title]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="400" height="30" uuid="1dd60dab-8f0a-4706-98f9-73672e993455"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{Title}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="100" uuid="9c6d0e1d-cb5a-4082-ad6a-13b36c30d9f1">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement style="Table_CH" mode="Opaque" x="0" y="0" width="100" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="d221e966-1853-40b0-b963-88dba73d9856"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document ID]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="100" height="30" uuid="d1d60dab-8f0a-4706-98f9-73672e993455"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentId}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="150" uuid="07000597-8ce9-4a90-8383-03c041bdb0a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="0" width="150" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="e772e805-4297-460f-be03-b403c250eaae"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Date and Time]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" pattern="ddMMMyyyy HH:mm:ss" isBlankWhenNull="true" hyperlinkType="ReportExecution">
+									<reportElement x="0" y="0" width="150" height="30" printWhenGroupChanges="RoomName" uuid="ad8c5a48-2506-496d-8f08-6e50231c55f0"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DateTime}]]></textFieldExpression>
+									<hyperlinkParameter name="_report">
+										<hyperlinkParameterExpression><![CDATA["/public/Reports/cti/Audit_Document_List"]]></hyperlinkParameterExpression>
+									</hyperlinkParameter>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="150" uuid="23a6e86d-094b-41a2-840d-3f151dbeb6e3">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="0" width="150" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="7b418d8c-c7a9-419d-ba05-aec6cc93e9cb"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[User Name]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" hyperlinkType="ReportExecution">
+									<reportElement x="0" y="0" width="150" height="30" printWhenGroupChanges="RoomName" uuid="d6a2acee-73ac-4cc9-ad7d-3d7ebb9f3c86"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{UserName}]]></textFieldExpression>
+									<hyperlinkParameter name="_report">
+										<hyperlinkParameterExpression><![CDATA["/public/sandbox_jr.trialinteractive.com_public/Reports/10_1___TI_Standard_Reports/Quality_Review_Reports/User_Updates"]]></hyperlinkParameterExpression>
+									</hyperlinkParameter>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="260" uuid="e08afb3c-7e68-47da-b9a6-100a429b0ac9">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:columnHeader style="Table_CH" height="30">
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="0" width="260" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="977e0174-c5dd-4172-a835-ee9645cb1fe1"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[User Email Address]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" hyperlinkType="ReportExecution">
+									<reportElement x="0" y="0" width="260" height="30" printWhenGroupChanges="RoomName" uuid="0c4a4cb8-d0aa-440f-be99-4d20905cf3c3"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{EmailAddress}]]></textFieldExpression>
+									<hyperlinkParameter name="_report">
+										<hyperlinkParameterExpression><![CDATA["/public/sandbox_jr.trialinteractive.com_public/Reports/10_1___TI_Standard_Reports/Quality_Review_Reports/User_Updates"]]></hyperlinkParameterExpression>
+									</hyperlinkParameter>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="150" uuid="1a8221b9-2008-4154-b2bd-4d8034535a31">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="0" width="150" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="cec0808a-c7b7-4c32-96e8-a6178866a4ed"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Activity Type]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" hyperlinkType="ReportExecution">
+									<reportElement x="0" y="0" width="150" height="30" printWhenGroupChanges="RoomName" uuid="50ab31ed-1692-4598-8339-e9030572e09f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{ActivityType}]]></textFieldExpression>
+									<hyperlinkParameter name="_report">
+										<hyperlinkParameterExpression><![CDATA["/public/Reports/cti/Audit_Document_List"]]></hyperlinkParameterExpression>
+									</hyperlinkParameter>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="300" uuid="64abe966-d1c0-4da4-b538-e928e75c83b1">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<printWhenExpression><![CDATA[true]]></printWhenExpression>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="0" width="300" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="e4a0857d-59d9-4006-9d98-ce3ebde3fcb0"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Activity Description]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+								<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="300" height="30" printWhenGroupChanges="RoomName" uuid="c52565e8-b0dd-42c5-80b6-6104a10a6232"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{ActivityDescription}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="160" uuid="ea14b2ac-8792-4b4d-9c31-e75b95227751">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+							<jr:columnHeader style="Table_CH" height="30">
+								<staticText>
+									<reportElement style="Table_CH" x="0" y="0" width="160" height="30" forecolor="#FFFFFF" backcolor="#4097CF" uuid="f663d42f-028a-448d-bd13-8b09a7732d45"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Document Link]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" hyperlinkType="Reference" hyperlinkTarget="Blank">
+									<reportElement x="0" y="0" width="160" height="30" forecolor="#0D00FF" uuid="a76dfadb-5f79-4c97-8a9c-b5985882e13b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isUnderline="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{DocumentLink} == null ? "" : "View"]]></textFieldExpression>
+									<hyperlinkReferenceExpression><![CDATA[$F{DocumentLink} == null ? "" :$F{DocumentLink}.substring($F{DocumentLink}.indexOf("http"), $F{DocumentLink}.lastIndexOf("\">"))]]></hyperlinkReferenceExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement x="0" y="100" width="1670" height="30" forecolor="#DE110D" uuid="0225b03a-021b-48ae-842a-09b9af034f5c">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[($P{EndDate}.getTime()-$P{StartDate}.getTime())> 90L * 24 * 60 * 60 * 1000]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Warning: Please select a max time period of 90 days.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="40" splitType="Stretch">
+			<textField pattern="MM/dd/yyyy HH:mm:ss a (z) zzzz">
+				<reportElement x="0" y="0" width="640" height="20" uuid="1eee313a-07a4-4c36-86b5-1b9df5df39a4">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiUpdatedOn"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box leftPadding="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss (z Z) zzzz").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="1211" y="0" width="299" height="20" uuid="39831ab6-e930-43dc-a13b-ff19222e42af">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiPageNumber"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box rightPadding="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="1510" y="0" width="160" height="20" uuid="1cd09484-360f-4dba-803c-714639873e05">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiTotalPages"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box rightPadding="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Training Completion by Single Learner " pageWidth="1250" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="1210" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="0ef21191-c59e-4de3-b220-ffbdeea78af3">
+	<property name="template.engine" value="tabular_template"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TEST"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#C1C1C1"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table_CH" mode="Opaque" forecolor="#FFFFFF" backcolor="#4097CF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="tableDataset" uuid="67410190-212e-4eb3-97a7-cf43c98690d4">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="GL2_Ideus "/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="Company" class="java.lang.Integer"/>
+		<parameter name="UserName" class="java.util.Collection"/>
+		<parameter name="SqlFilter" class="java.lang.String">
+			<defaultValueExpression><![CDATA["and u.id IN (" + String.join(",", $P{UserName}) + ")"]]></defaultValueExpression>
+		</parameter>
+		<queryString language="SQL">
+			<![CDATA[SELECT 
+    u.id AS 'User ID',
+    u.firstname AS 'First Name',
+    u.lastname AS 'Last Name',
+    CASE
+        WHEN
+            crc.duedate > 0
+        THEN
+            STR_TO_DATE(FROM_UNIXTIME(crc.duedate, '%Y-%m-%d'),
+                    '%Y-%m-%d')
+        ELSE NULL
+    END AS 'Course Due Date',
+    c.fullname AS 'Course Name',
+    GROUP_CONCAT(DISTINCT d.name
+        SEPARATOR ',') AS 'Training Groups',
+    crc.coursestatus AS 'Course Status',
+    CASE
+        WHEN
+            ue.timecreated > 0
+        THEN
+            STR_TO_DATE(FROM_UNIXTIME(ue.timecreated, '%Y-%m-%d'),
+                    '%Y-%m-%d')
+        ELSE NULL
+    END AS 'Course Assigned Date',
+    CASE
+        WHEN
+            crc.timecompleted > 0
+        THEN
+            STR_TO_DATE(FROM_UNIXTIME(crc.timecompleted, '%Y-%m-%d'),
+                    '%Y-%m-%d')
+        ELSE NULL
+    END AS 'Course Completion Date',
+    CASE
+        WHEN
+            (c.esignature = 0
+                OR (SELECT 
+                    ns.value
+                FROM
+                    mdl_multi_notification_settings ns
+                WHERE
+                    ns.companyid = 23
+                        AND ns.name = 'multi_module_esignature') = 0)
+        THEN
+            'N/A'
+        WHEN
+            (cuc.esign IS NOT NULL OR cuc.esign > 0)
+                AND el.signedon IS NOT NULL
+        THEN
+            FROM_UNIXTIME(el.signedon, '%d %M %Y %H:%i:%s')
+        ELSE 'Not Completed'
+    END AS 'eSign'
+FROM
+    mdl_compliance_report_crondata crc
+        JOIN
+    mdl_course c ON c.id = crc.courseid
+        JOIN
+    mdl_enrol e ON e.courseid = crc.courseid
+        JOIN
+    mdl_user_enrolments ue ON ue.enrolid = e.id
+        AND ue.userid = crc.userid
+        JOIN
+    mdl_user u ON u.id = crc.userid
+        JOIN
+    mdl_company_users cu ON cu.userid = crc.userid
+        AND cu.companyid = crc.companyid
+        LEFT JOIN
+    mdl_course_completions cuc ON cuc.userid = crc.userid
+        AND cuc.course = crc.courseid
+        LEFT JOIN
+    mdl_department d ON crc.departmentid = d.id
+        AND d.company = crc.companyid
+        LEFT JOIN
+    mdl_department_room dr ON crc.companyid = dr.companyid
+        AND crc.departmentid = dr.departmentid
+        LEFT JOIN
+    mdl_company_course cc ON cc.departmentid = crc.departmentid
+        AND cc.courseid = crc.courseid
+        AND cc.companyid = crc.companyid
+        LEFT JOIN
+    mdl_user ad ON ad.id = crc.adminid
+        JOIN
+    mdl_course_user_mapping cum ON cum.companyid = crc.companyid
+        AND cum.userid = crc.userid
+        AND cum.courseid = crc.courseid
+        AND cum.groupmax = 1
+        LEFT JOIN
+    mdl_esignature_log el ON cuc.esign = el.id
+WHERE
+    (e.enrol LIKE 'manual'
+        OR e.enrol LIKE 'self')
+        AND ue.status = 0
+        AND (crc.roles = 5 OR crc.roles LIKE '5,%'
+        OR crc.roles LIKE '%,5,%'
+        OR crc.roles LIKE '%,5')
+        AND crc.companyid = 31
+        AND c.lpcourse != 1
+        $P!{SqlFilter}
+GROUP BY crc.companyid , crc.userid , crc.courseid
+ORDER BY crc.id DESC]]>
+		</queryString>
+		<field name="First Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="First Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="mdl_user"/>
+		</field>
+		<field name="Last Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Last Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="mdl_user"/>
+		</field>
+		<field name="Course Due Date" class="java.sql.Timestamp">
+			<property name="com.jaspersoft.studio.field.label" value="Course ID"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="mdl_course"/>
+		</field>
+		<field name="Course Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Course name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="mdl_course"/>
+		</field>
+		<field name="Training Groups" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Course Version"/>
+		</field>
+		<field name="Course Status" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="Course Status"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="mdl_course"/>
+		</field>
+		<field name="Course Assigned Date " class="java.sql.Timestamp"/>
+		<field name="Course Completion Date" class="java.sql.Timestamp"/>
+		<field name="eSign" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="Company" class="java.lang.Integer"/>
+	<parameter name="UserName" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="User ID" class="java.lang.Long"/>
+	<field name="First Name" class="java.lang.String"/>
+	<field name="Last Name" class="java.lang.String"/>
+	<field name="Course ID" class="java.lang.Long"/>
+	<field name="Course name" class="java.lang.String"/>
+	<field name="Course Completed" class="java.lang.String"/>
+	<field name="Course Completion Date" class="java.util.Date"/>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="40" width="1230" height="30" uuid="89591740-e6e2-417c-b056-b948c3c9d545">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.export.html.class" value="origamiReportTitle"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Training Completion by Single Learner]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="MM/dd/yyyy HH:mm:ss a (z) zzzz">
+				<reportElement x="0" y="0" width="1230" height="22" uuid="78613faf-76b3-4ae0-b09b-1cbdd702e6b4">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiUpdatedOn"/>
+				</reportElement>
+				<box leftPadding="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss (z Z) zzzz").format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="1230" height="22" uuid="2a5dce4f-46fc-46b8-8034-0276551982a2">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiPageNumber"/>
+				</reportElement>
+				<box rightPadding="120"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="1230" height="22" uuid="1bb6118d-6ef5-4fa2-be09-ccfc413a9813">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiTotalPages"/>
+				</reportElement>
+				<box rightPadding="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="1230" height="22" uuid="2d9521b8-a3ca-4f5c-80c2-09db7ad9ecd8">
+					<property name="net.sf.jasperreports.export.html.class" value="origamiPageNumber"/>
+				</reportElement>
+				<box rightPadding="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="264" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<componentElement>
+				<reportElement x="0" y="0" width="1210" height="90" uuid="3f372a5c-4d0c-4e4d-bc83-8b89397d1f76">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
+					<datasetRun subDataset="tableDataset" uuid="c27d9bbb-316d-4225-983c-198ce4cd5fca">
+						<datasetParameter name="Company">
+							<datasetParameterExpression><![CDATA[$P{Company}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="UserName">
+							<datasetParameterExpression><![CDATA[$P{UserName}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="135" uuid="c836ba82-70c3-4fe8-997f-73c03727ed6a">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="135" height="30" uuid="8b8e1424-1c61-4af6-ba17-b80773ad8a72"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[First Name]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="135" height="30" uuid="c6124acf-257d-4060-902d-b2f783e7837f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{First Name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="135" uuid="caae844e-ab41-436c-a33d-3642f5de9975">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="135" height="30" uuid="d9836fb5-36e1-446f-849b-21b6e10c0e9f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Last Name]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="135" height="30" uuid="c4d82002-f88c-4e2a-8f94-c69660331bad"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Last Name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="135" uuid="e4ed98d8-6744-4694-9ebc-790b33aaa9bb">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="135" height="30" uuid="5b05a948-36d9-46c0-8c60-0546fa3915dc"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Course Due Date]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="135" height="30" uuid="1406b894-fab7-430f-b88c-2c374a715c1f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Course Due Date}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="135" uuid="dc4e257d-cb11-4605-9140-493e6cdddde7">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="135" height="30" uuid="f726a725-8598-4420-ada3-931d47385171"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Course Name]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="135" height="30" uuid="7b6c192b-d087-4556-a619-2c2ad7dc25df"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Course Name}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="134" uuid="29e396c9-61ab-4f46-88d6-60e9675c7d80">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="134" height="30" uuid="77795be9-38ab-4454-a63c-6a438dd031ea"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Training Group]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="134" height="30" uuid="b163b068-76b4-4a2e-bfd1-e193d6953546"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Training Groups}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="134" uuid="55d61777-65fc-477f-9b9b-a6b04faa8b9c">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="134" height="30" uuid="929fe85b-a6bd-45bc-ba8c-f14d500fdbe2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Course Status]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="134" height="30" uuid="33b23946-4067-48ce-ad83-7b714ba07252"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Course Status}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="134" uuid="df65da97-a649-496e-8700-a4d6db69bbb8">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="134" height="30" uuid="e5ce7577-9daa-4c2d-924c-13a40e080d71"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Course Assigned Date]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="134" height="30" uuid="b4eba2e5-a543-4309-a164-147c96c20e02"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Course Assigned Date }]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="134" uuid="8c09da5b-c47a-4751-a991-170ba7c9cecc">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="134" height="30" uuid="83e09a6c-6ee7-4199-b605-cd5b934719eb"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Course Completion Date]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField pattern="dd/MMM/yyyy" isBlankWhenNull="true">
+								<reportElement style="Table_TD" x="0" y="0" width="134" height="30" uuid="583b065a-163a-438d-b2ff-466fc93c44fd"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{Course Completion Date}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="134" uuid="a536965b-fa1b-4757-94bf-0e8f789bae4a">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement style="Table_CH" x="0" y="0" width="134" height="30" uuid="80728307-dab1-4d86-87ee-13457b33a53a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[eSign]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement style="Table_TD" x="0" y="0" width="134" height="30" uuid="092e83cb-2eb4-4f66-a05c-4cfefa4f97dd"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{eSign}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</summary>
+</jasperReport>
