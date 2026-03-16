@@ -1,0 +1,30 @@
+SELECT
+    SiteName AS [Room Name],
+    SiteId AS [Room ID],
+    [Status] AS [Status (Active/Inactive)],
+    SiteCategoryName AS [Room Folder Name],
+    SiteCreatedDate AS [Date of Room Creation],
+    [WCT ID],
+    ClonedFrom
+FROM dbo.vw_AllSitesInfo
+ORDER BY SiteCreatedDate DESC;
+
+
+
+
+SELECT
+    SiteName AS [Room Name],
+    SiteId AS [Room ID],
+    [Status] AS [Status (Active/Inactive)],
+    SiteCategoryName AS [Room Folder Name],
+    SiteCreatedDate AS [Date of Room Creation],
+    [WCT ID],
+    ClonedFrom
+FROM dbo.vw_AllSitesInfo q
+WHERE q.SiteName NOT LIKE '%Test%' 
+  AND q.SiteName NOT LIKE '%PDC%'  
+  AND q.SiteName NOT LIKE '%UAT%'
+  AND q.SiteName NOT LIKE '%Demo%'
+  AND q.SiteName NOT LIKE '%CAT%room'
+  AND q.SiteCategoryName NOT IN ('Archive Rooms', 'Hosting Rooms', 'On Hold Rooms')
+ORDER BY SiteCreatedDate DESC;
