@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created based on reference JRXML -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Profound - Privacy Event (PE) Report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e2f5d650-6e49-42ae-b454-bfd0afb5702a">
+	<style name="TableLabel" forecolor="#5D6982" hTextAlign="Left" vTextAlign="Top" fontName="Arial" fontSize="11" isBold="true">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box topPadding="5">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBody" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" isBlankWhenNull="true" fontName="Arial" fontSize="12">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box>
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="TableBodyHtml" forecolor="#100040" hTextAlign="Left" vTextAlign="Top" markup="html" isBlankWhenNull="true" fontName="Arial" fontSize="12">
+		<pen lineWidth="0.5" lineColor="#DFE3E6"/>
+		<box topPadding="5" bottomPadding="5">
+			<pen lineWidth="0.5"/>
+			<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EDEDED"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="MainTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="20" isBold="true"/>
+	<style name="SubTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="16" isBold="true"/>
+	<style name="SubSectioniTitle" forecolor="#100040" hTextAlign="Left" vTextAlign="Middle" fontName="Arial" fontSize="14" isBold="true"/>
+	<parameter name="LOGO" class="java.awt.Image"/>
+	<parameter name="TOPIC_ID" class="java.lang.Integer">
+		<parameterDescription><![CDATA[Topic ID used as PE ID filter]]></parameterDescription>
+	</parameter>
+	<parameter name="LoggedInUserAttribute_USER_ID" class="java.lang.String"/>
+	<parameter name="LoggedInUserAttribute_SITE_ID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Exec [dbo].[Reports_Records_Dynamic]
+    @SiteId = $P{LoggedInUserAttribute_SITE_ID},
+    @UserId = $P{LoggedInUserAttribute_USER_ID},
+    @RecordType = 'Incident',
+    @RecordId = $P{TOPIC_ID},
+    @FieldListing = '[TopicId],[$Id$],[$Title$],[$$TypeName$$],[$DueDate$],[$$TeamName$$],[$IncidentDate$],[$ReportedOn$],[$$ReporterName$$],[$Description$],[QEShortDescription],[Wasstudyimpacted],[Sponsoraffected],[ProtocolNumber],[Selectthenameofthefunctionwheretheeventoccured],[Wassiteimpacted],[ImpactedSites],[WasInvestigatorimpacted],[ImpactedInvestigator],[Describemitigationscorrectionstaken],[WasCROAffected],[CROAffected],[WasVendorsaffected],[VendorsAffected],[WereProfoundpersonnelaffected],[ProfoundPersonnelAffected],[Wereotherentitiesaffected],[OtherEntitiesAffected],[DateofAssessment],[Assessment],[DoestheincidentrequireIRBReporting],[DateReportedtoIRB],[QualityReviewComplete],[$QAFeedback$]']]>
+	</queryString>
+
+	<field name="TopicId" class="java.lang.Integer"/>
+	<field name="$Id$" class="java.lang.String"/>
+	<field name="$Title$" class="java.lang.String"/>
+	<field name="$$TypeName$$" class="java.lang.String"/>
+	<field name="$DueDate$" class="java.sql.Date"/>
+	<field name="$$TeamName$$" class="java.lang.String"/>
+	<field name="$IncidentDate$" class="java.sql.Date"/>
+	<field name="$ReportedOn$" class="java.sql.Date"/>
+	<field name="$$ReporterName$$" class="java.lang.String"/>
+	<field name="$Description$" class="java.lang.String"/>
+	<field name="QEShortDescription" class="java.lang.String"/>
+	<field name="Wasstudyimpacted" class="java.lang.String"/>
+	<field name="Sponsoraffected" class="java.lang.String"/>
+	<field name="ProtocolNumber" class="java.lang.String"/>
+	<field name="Selectthenameofthefunctionwheretheeventoccured" class="java.lang.String"/>
+	<field name="Wassiteimpacted" class="java.lang.String"/>
+	<field name="ImpactedSites" class="java.lang.String"/>
+	<field name="WasInvestigatorimpacted" class="java.lang.String"/>
+	<field name="ImpactedInvestigator" class="java.lang.String"/>
+	<field name="Describemitigationscorrectionstaken" class="java.lang.String"/>
+	<field name="WasCROAffected" class="java.lang.String"/>
+	<field name="CROAffected" class="java.lang.String"/>
+	<field name="WasVendorsaffected" class="java.lang.String"/>
+	<field name="VendorsAffected" class="java.lang.String"/>
+	<field name="WereProfoundpersonnelaffected" class="java.lang.String"/>
+	<field name="ProfoundPersonnelAffected" class="java.lang.String"/>
+	<field name="Wereotherentitiesaffected" class="java.lang.String"/>
+	<field name="OtherEntitiesAffected" class="java.lang.String"/>
+	<field name="DateofAssessment" class="java.sql.Date"/>
+	<field name="Assessment" class="java.lang.String"/>
+	<field name="DoestheincidentrequireIRBReporting" class="java.lang.String"/>
+	<field name="DateReportedtoIRB" class="java.sql.Date"/>
+	<field name="QualityReviewComplete" class="java.lang.String"/>
+	<field name="$QAFeedback$" class="java.lang.String"/>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<textField pattern="dd MMM yyyy">
+				<reportElement x="495" y="0" width="60" height="12" uuid="14037486-4d5d-44ae-9966-12926c6acbfb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="330" splitType="Stretch">
+			<staticText><reportElement style="MainTitle" x="0" y="0" width="550" height="30" uuid="5e9c393d-4bf4-4a65-a7be-7a4fad0175d3"/><text><![CDATA[PRIVACY EVENT (PE) REPORT]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="30" width="180" height="25" uuid="13d1a864-d700-4331-9824-ce98bb69fa7b"/><text><![CDATA[Generated Name]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="30" width="370" height="25" uuid="b355ea75-2734-4b27-8696-ee353ba529d4"/><textFieldExpression><![CDATA[$F{$Title$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="55" width="180" height="25" uuid="92b7c9e1-94c0-45bb-98be-0eeb522ff4d6"/><text><![CDATA[Type]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="55" width="370" height="25" uuid="bda1a142-f8da-42ea-9405-406a854864f4"/><textFieldExpression><![CDATA[$F{$$TypeName$$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="80" width="180" height="25" uuid="2a41fc78-0ef8-4bdc-ba04-810e10c4541d"/><text><![CDATA[Due Date]]></text></staticText>
+			<textField pattern="dd MMM yyyy"><reportElement style="TableBody" x="180" y="80" width="370" height="25" uuid="35c854a7-6384-4a13-83e4-3022a9810f6b"/><textFieldExpression><![CDATA[$F{$DueDate$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="105" width="180" height="25" uuid="1476d9e1-210d-41e5-8c93-3a24e6e9118c"/><text><![CDATA[Team]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="105" width="370" height="25" uuid="1752733a-fbd6-447d-adc2-c40756c85f9d"/><textFieldExpression><![CDATA[$F{$$TeamName$$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="130" width="180" height="25" uuid="81bfa433-8177-4b76-92c6-bac80593c1ef"/><text><![CDATA[Incident Date]]></text></staticText>
+			<textField pattern="dd MMM yyyy"><reportElement style="TableBody" x="180" y="130" width="370" height="25" uuid="5605f6aa-9ac5-44de-b665-89b741bbe9d3"/><textFieldExpression><![CDATA[$F{$IncidentDate$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="155" width="180" height="25" uuid="b3df36b2-db9c-4ed8-aa3e-afd1cc6439a4"/><text><![CDATA[Reported On]]></text></staticText>
+			<textField pattern="dd MMM yyyy"><reportElement style="TableBody" x="180" y="155" width="370" height="25" uuid="d68ff35c-f007-41a3-b108-c59807f50f94"/><textFieldExpression><![CDATA[$F{$ReportedOn$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="180" width="180" height="25" uuid="d44abad4-6932-4bf7-b4aa-e33279ef103f"/><text><![CDATA[Initial Reporter]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="180" width="370" height="25" uuid="26a52f86-824c-4cde-bc14-da499c6d8d10"/><textFieldExpression><![CDATA[$F{$$ReporterName$$}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="205" width="180" height="125" uuid="d0a9fd5b-9fa7-47f1-81aa-070b446dfd99"/><text><![CDATA[Event Short Description]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" positionType="Float" stretchType="RelativeToTallestObject" x="180" y="205" width="370" height="125" uuid="a2c22f84-f19f-4ad3-adfe-819f6d6f8156"/><textFieldExpression><![CDATA[$F{$Description$} == null ? "" : String.valueOf($F{$Description$}).replaceAll("<[^>]*>", "").trim().replaceAll("\r\n|\r|\n", "<br/>")]]></textFieldExpression></textField>
+		</band>
+
+		<band height="415" splitType="Stretch">
+			<staticText><reportElement style="TableLabel" x="0" y="0" width="180" height="60" uuid="e6bedb22-bf69-49a9-9717-b38a73550645"/><text><![CDATA[Event Summary]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="0" width="370" height="60" uuid="94828b43-3207-40d6-b7ab-b566d1392509"/><textFieldExpression><![CDATA[$F{QEShortDescription}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="60" width="180" height="25" uuid="96fa66ef-3491-4494-843e-78d6b7d48b64"/><text><![CDATA[Was study impacted?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="60" width="370" height="25" uuid="a6874fc1-2d2d-452c-a42c-d8ca78fd8447"/><textFieldExpression><![CDATA[( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{Wasstudyimpacted} == null ? "" : String.valueOf($F{Wasstudyimpacted}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="85" width="180" height="25" uuid="824571c2-16e1-4d29-abac-269833fc01c7"/><text><![CDATA[Sponsor Impacted]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="85" width="370" height="25" uuid="263867cc-cf4c-4215-bf5b-bcb7d26ea6ad"/><textFieldExpression><![CDATA[$F{Sponsoraffected}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="110" width="180" height="25" uuid="4fd717d6-c0de-4db2-b051-8d8876e5d911"/><text><![CDATA[Protocol #]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="110" width="370" height="25" uuid="773e5471-3a62-4ddd-90e5-4803a86c068c"/><textFieldExpression><![CDATA[$F{ProtocolNumber}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="135" width="260" height="40" uuid="ccf1d438-e255-426c-9e6f-7faae4d80257"/><text><![CDATA[Select the name of the function where the event occurred]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="260" y="135" width="290" height="40" uuid="f920e36d-9548-45e1-9500-c992a1152edd"/><textFieldExpression><![CDATA[$F{Selectthenameofthefunctionwheretheeventoccured}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="175" width="180" height="25" uuid="70ea8c50-2bcd-410e-a560-c6a092b931a0"/><text><![CDATA[Was site impacted?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="175" width="370" height="25" uuid="da197a4d-ade5-412d-a667-741e3d8b7213"/><textFieldExpression><![CDATA[( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{Wassiteimpacted} == null ? "" : String.valueOf($F{Wassiteimpacted}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="200" width="180" height="60" uuid="633c851b-681c-4ad5-b890-a5a21fbc0f86"/><textElement verticalAlignment="Top"/><text><![CDATA[Impacted Site(s)]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="200" width="370" height="60" uuid="ccba7935-9045-4ff9-9c00-8490bf1f889b"/><textElement verticalAlignment="Top"/><textFieldExpression><![CDATA[$F{ImpactedSites} == null ? "" : String.valueOf($F{ImpactedSites}).replaceAll("\r\n|\r|\n", "<br/>")]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="260" width="180" height="25" uuid="3cba2683-3543-4724-a481-b6e6e55a37f7"/><text><![CDATA[Was Investigator impacted?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="260" width="370" height="25" uuid="64f76df2-ee9f-45bd-8e1d-41df278fd419"/><textFieldExpression><![CDATA[( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{WasInvestigatorimpacted} == null ? "" : String.valueOf($F{WasInvestigatorimpacted}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="285" width="180" height="25" uuid="d6e5de28-7221-460e-9506-ffbbbbeae406"/><text><![CDATA[Impacted Investigator]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="285" width="370" height="25" uuid="fc420152-dc43-458a-9d45-ad2d37abd250"/><textFieldExpression><![CDATA[$F{ImpactedInvestigator}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="310" width="180" height="55" uuid="afcd8e7f-a8a7-49e4-a690-71127594f294"/><text><![CDATA[Describe mitigations/ corrections taken]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="310" width="370" height="55" uuid="3aecb822-9b48-4deb-ada3-b3040091628f"/><textFieldExpression><![CDATA[$F{Describemitigationscorrectionstaken}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="365" width="180" height="25" uuid="bffa9a7e-b2fd-4e4a-90bb-5c42c5766fd2"/><text><![CDATA[Was CRO Affected]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="365" width="370" height="25" uuid="55adb1fb-04df-491a-ac18-c4f2c12328f7"/><textFieldExpression><![CDATA[( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{WasCROAffected} == null ? "" : String.valueOf($F{WasCROAffected}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="390" width="180" height="25" uuid="2bb18e4a-f8bc-45e3-91cb-38c6d7eb8e8e"/><text><![CDATA[CRO Affected]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="390" width="370" height="25" uuid="ad2f9a43-4b01-4f05-b165-3982072c9c54"/><textFieldExpression><![CDATA[$F{CROAffected}]]></textFieldExpression></textField>
+		</band>
+
+		<band height="305" splitType="Prevent">
+			<staticText><reportElement style="TableLabel" x="0" y="0" width="260" height="25" uuid="b0bf82c2-3c17-4a14-b66c-633cd0fd4f44"/><text><![CDATA[Was/Were Vendor(s) affected?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="0" width="290" height="25" uuid="5fca1b13-f198-464e-ad2d-18e86ab162b7"/><textFieldExpression><![CDATA[( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{WasVendorsaffected} == null ? "" : String.valueOf($F{WasVendorsaffected}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="25" width="260" height="30" uuid="85a9c66f-a05c-4fba-befc-8b94226367b8"/><text><![CDATA[Vendor(s) Affected]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="25" width="290" height="30" uuid="2e26282f-7b34-450e-9793-fbdc649c9b24"/><textFieldExpression><![CDATA[$F{VendorsAffected}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="55" width="260" height="25" uuid="8424217f-e4f5-478e-bbf0-630b1567de43"/><text><![CDATA[Were Profound Personnel Affected?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="55" width="290" height="25" uuid="3fbebb3f-a576-4fdc-b65f-8ff123adba59"/><textFieldExpression><![CDATA[( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{WereProfoundpersonnelaffected} == null ? "" : String.valueOf($F{WereProfoundpersonnelaffected}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="80" width="260" height="30" uuid="c11cb62f-2fab-4632-998f-a7fe55640a77"/><text><![CDATA[Profound Personnel Affected]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="80" width="290" height="30" uuid="ae007e1c-011f-4ca8-9386-d63bf526af4c"/><textFieldExpression><![CDATA[$F{ProfoundPersonnelAffected}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="110" width="260" height="25" uuid="16099545-5d51-470b-a2ef-338a51bf8310"/><text><![CDATA[Were Other Entities affected?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="110" width="290" height="25" uuid="32e7cce4-1822-4430-824a-664d6ae3c084"/><textFieldExpression><![CDATA[( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{Wereotherentitiesaffected} == null ? "" : String.valueOf($F{Wereotherentitiesaffected}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="135" width="260" height="30" uuid="9a04465b-64e9-4c92-a036-510ea7996ecc"/><text><![CDATA[Other Entities Affected]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="260" y="135" width="290" height="30" uuid="05c7a761-9275-4ac7-ab3a-2ec7795e9223"/><textFieldExpression><![CDATA[$F{OtherEntitiesAffected}]]></textFieldExpression></textField>
+
+			<staticText><reportElement style="SubTitle" x="0" y="165" width="260" height="25" uuid="42b647bc-1ebc-4618-953f-abf836c181d3"/><text><![CDATA[PE Report - Assessment]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="190" width="180" height="25" uuid="d565a2cc-91e9-4d33-8830-dc294444e57c"/><text><![CDATA[Date of Assessment]]></text></staticText>
+			<textField pattern="dd MMM yyyy"><reportElement style="TableBody" x="180" y="190" width="370" height="25" uuid="1d42aab1-4cde-4667-84f1-9f26ffddc771"/><textFieldExpression><![CDATA[$F{DateofAssessment}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="215" width="180" height="40" uuid="0cdbcb77-2e1d-486a-9641-17e51fecb17e"/><text><![CDATA[Assessment]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="215" width="370" height="40" uuid="6c4144f5-c199-40c0-abb1-5ff0a19e8f93"/><textFieldExpression><![CDATA[$F{Assessment}]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="255" width="260" height="25" uuid="b0c0c44f-021c-446d-9410-1a694a7fbe80"/><text><![CDATA[Does the incident require IRB Reporting?]]></text></staticText>
+			<textField><reportElement style="TableBody" x="260" y="255" width="290" height="25" uuid="bb0cf942-6bac-41bd-be90-e3e49b107e7e"/><textFieldExpression><![CDATA[( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{DoestheincidentrequireIRBReporting} == null ? "" : String.valueOf($F{DoestheincidentrequireIRBReporting}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="280" width="180" height="25" uuid="d67c3255-488e-404e-afab-a79984912e8f"/><text><![CDATA[Date Reported to IRB]]></text></staticText>
+			<textField pattern="dd MMM yyyy"><reportElement style="TableBody" x="180" y="280" width="370" height="25" uuid="8991bbe3-f44f-4f30-897f-70f88983497c"/><textFieldExpression><![CDATA[$F{DateReportedtoIRB}]]></textFieldExpression></textField>
+		</band>
+
+		<band height="90" splitType="Stretch">
+			<staticText><reportElement style="SubTitle" x="0" y="0" width="520" height="25" uuid="5798b5fc-adde-4d1a-a37a-f77d46621241"/><text><![CDATA[PE Report - Compliance Review]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="25" width="180" height="25" uuid="5ae7a62f-796b-45ae-97e3-b6e051a656be"/><text><![CDATA[Review Complete]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="25" width="370" height="25" uuid="2178fb07-791f-4a03-b2fb-258417c41699"/><textFieldExpression><![CDATA[( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="50" width="180" height="40" uuid="5141555f-c02f-43f1-8988-095311c241f5"/><text><![CDATA[Review Feedback]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="50" width="370" height="40" uuid="1d01cd16-5de5-4811-a794-92831f43c403"/><textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression></textField>
+		</band>
+
+		<band height="90" splitType="Stretch">
+			<staticText><reportElement style="SubTitle" x="0" y="0" width="520" height="25" uuid="2b4257d4-0291-4a1b-abc4-5576c85aae1c"/><text><![CDATA[PE Report - Legal Approval]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="25" width="180" height="25" uuid="16946ef3-5e87-45aa-801e-7cf20060b8d1"/><text><![CDATA[Review Complete]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="25" width="370" height="25" uuid="a66e018c-1ff5-4550-b26c-b9daa7a0cda2"/><textFieldExpression><![CDATA[( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="50" width="180" height="40" uuid="29fb0112-27f3-4e70-8720-29a4b8d33c05"/><text><![CDATA[Review Feedback]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="50" width="370" height="40" uuid="7e29093a-c578-4f7a-b11b-7643f38d82d3"/><textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression></textField>
+		</band>
+
+		<band height="90" splitType="Stretch">
+			<staticText><reportElement style="SubTitle" x="0" y="0" width="520" height="25" uuid="c36cd23e-8487-45a4-85a3-fa97fcab373a"/><text><![CDATA[PE Report - Functional Approval]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="25" width="180" height="25" uuid="abc85aa1-12f8-481f-962f-0910d92f039c"/><text><![CDATA[Review Complete]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="25" width="370" height="25" uuid="c04cc034-ec2a-473d-80a1-549e6b6b6740"/><textFieldExpression><![CDATA[( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="50" width="180" height="40" uuid="bdf5dcb1-dfc9-41df-8d3f-da8b58881d5a"/><text><![CDATA[Review Feedback]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="50" width="370" height="40" uuid="77b7641e-082c-4ff1-859a-d76b958b3356"/><textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression></textField>
+		</band>
+
+		<band height="90" splitType="Stretch">
+			<staticText><reportElement style="SubTitle" x="0" y="0" width="520" height="25" uuid="c760f3da-ec7a-4921-9060-e51b88399fb0"/><text><![CDATA[PE Report - Compliance Approval]]></text></staticText>
+			<staticText><reportElement style="TableLabel" x="0" y="25" width="180" height="25" uuid="3a1cd8e9-71ed-4d17-9543-d991d6f23241"/><text><![CDATA[Review Complete]]></text></staticText>
+			<textField><reportElement style="TableBody" x="180" y="25" width="370" height="25" uuid="27debe10-15b3-4a80-aa3d-497106d9f71b"/><textFieldExpression><![CDATA[( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).length() == 0 ? "" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("1") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("true") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("yes") ? "Yes" : (( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equals("0") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("false") || ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() ).equalsIgnoreCase("no") ? "No" : ( $F{QualityReviewComplete} == null ? "" : String.valueOf($F{QualityReviewComplete}).replaceAll("<[^>]*>", "").trim() )))]]></textFieldExpression></textField>
+			<staticText><reportElement style="TableLabel" x="0" y="50" width="180" height="40" uuid="fcdf968f-7e3c-4b39-aafb-47e27cf85eae"/><text><![CDATA[Review Feedback]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement style="TableBodyHtml" x="180" y="50" width="370" height="40" uuid="07ac8c37-8172-4e0e-a481-517912912c59"/><textFieldExpression><![CDATA[$F{$QAFeedback$}]]></textFieldExpression></textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField pattern="dd MMM yyyy">
+				<reportElement x="431" y="4" width="120" height="12" uuid="db36bfc6-5077-40ad-b76c-ba8cb5a0219c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"><font fontName="Arial" size="8"/></textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Master">
+				<reportElement x="230" y="0" width="100" height="20" forecolor="#5D6982" uuid="60868dc6-d1a9-4da1-a701-be53704cd8e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Arial" size="11"/></textElement>
+				<textFieldExpression><![CDATA["Page " + $V{MASTER_CURRENT_PAGE}+ " of " + $V{MASTER_TOTAL_PAGES}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
