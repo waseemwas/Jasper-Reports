@@ -1,0 +1,15 @@
+SELECT s.SiteId, s.SiteName, sm.CDSReportStatus
+FROM [Site] s
+JOIN [SiteMetadata] sm
+    ON sm.SiteId = s.SiteId
+WHERE sm.CDSReportStatus = 'Active'
+  AND s.StatusId = 1;  -- assuming StatusId = 1 means the site itself is active
+
+
+---------------------------------------------------------------------
+
+SELECT s.SiteId, s.SiteName, sm.CDSReportStatus
+FROM [Site] s
+LEFT JOIN [SiteMetadata] sm ON sm.SiteId = s.SiteId
+WHERE s.StatusId = 1
+ORDER BY s.SiteId;
