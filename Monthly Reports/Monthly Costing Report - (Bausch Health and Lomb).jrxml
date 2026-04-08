@@ -11,10 +11,6 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="ireport.jasperserver.url" value="https://mti-jr.trialinteractive.com/-/"/>
-	<property name="ireport.jasperserver.user" value="jasperadmin|organization_1"/>
-	<property name="ireport.jasperserver.report.resource" value="/public/mti_jr.trialinteractive.com_public/Reports/Monthly_Costing_Report_files/Monthly_Costing_Report_"/>
-	<property name="ireport.jasperserver.reportUnit" value="/public/mti_jr.trialinteractive.com_public/Reports/Monthly_Costing_Report"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#349CDA">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
