@@ -23,8 +23,7 @@ WHERE ISNULL(umv.RoleLevel, 0) < 500
         WHERE isc.SiteID = sud.[SiteId] 
           AND isc.ContactId = sud.UserId
     )
-  AND sud.SiteId IN (
-        10,18,19,22,23,30,32,34,35,36,37,38,39,41,42,43,44,45,46,47,
-        48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,
-        68,69,70,71,72,73,74,75,76,77,78
-    );
+  AND sud.SiteId BETWEEN 10 AND 200;
+
+
+------Add the SiteID as needed-------
