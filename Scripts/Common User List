@@ -1,0 +1,36 @@
+SELECT DISTINCT
+    [SiteName] AS [Room Name],
+    [$$InvitedOn$$] AS [Invited On],
+    u.[FirstName] AS [First Name],
+    u.[LastName] AS [Last Name],
+    sud.[FullName] AS [User Full Name],
+    sud.[UserId] AS [UserId],
+    sud.[EmailAddress] AS [User Email Address],
+    [$$InvitedBy$$] AS [Invited By],
+    [$$OrganizationName$$] AS [Organization],
+    [$$RoleName$$] AS [Current Access Level],
+    sud.[$$Status$$] AS [Status],
+    [$$Actions$$] AS [Actions],
+    sud.[$$Groups$$] AS [Groups],
+    [$$ExpirationDate$$] AS [Expiration Date],
+    [$$InvitationMode$$] AS [Invitation Mode],
+    [$$LastVisit$$] AS [Last Visit Date],
+    sud.[$$LastLoginDate$$] AS [Last Login Date],
+    [$$AccessRevokedOn$$] AS [Access Revoked On],
+    [$$AccessRevokedBy$$] AS [Access Revoked By],
+    [$$IsDeleted$$] AS [Is Deleted],
+    [$$IsExpired$$] AS [Is Expired],
+    sud.[$$PrevRoleName$$] AS [Previous User Role],
+    sud.[$$PrevRoleLevel$$] AS [Previous User Level],
+    sud.[$$RoleUpdateDate$$] AS [Date the last role was changed]
+FROM [dbo].[vw_SiteUserData] sud
+INNER JOIN dbo.[User] u 
+    ON u.UserId = sud.UserId
+INNER JOIN dbo.UserMetadataVirtual umv 
+    ON umv.UserId = u.UserId 
+   AND umv.SiteId = sud.SiteId
+WHERE 
+    ISNULL(umv.RoleLevel, 0) < 500 
+    AND sud.SiteName <> 'System' 
+    AND u.[Status] = 'Active' 
+    AND sud.[EmailAddress] LIKE '%@accelagen.com.au'
