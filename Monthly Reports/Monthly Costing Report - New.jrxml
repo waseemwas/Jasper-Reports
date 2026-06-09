@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Monthly Costing Reports" pageWidth="4590" pageHeight="842" orientation="Landscape" columnWidth="4550" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cedb548c-0df4-4676-a752-f860ccaa217e">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="net.sf.jasperreports.export.html.exclude.key.KeyUpd"/>
@@ -71,10 +71,10 @@ WITH SiteInfo AS (
         ProtocolNumber, 
         [Project Manager] AS ProjectManager,
         tr.TopicName AS Region, 
-        ClientName, 
-        ClientType, 
+        sm.ClientType, 
         [Billing.JobNumber] AS BillingJobNumber,
         IndexPath AS SiteIndexPath,
+        client.TopicName AS TiClient,
         CASE WHEN COUNT(dmv.TopicId) > 1 THEN 'Y' ELSE 'N' END AS DocumentUploadedinRoom,
         CASE 
             WHEN COUNT(dm.TopicId) > 1 AND COUNT(dm.DocumentTypeId) > 1 THEN 'Y' 
@@ -94,10 +94,12 @@ WITH SiteInfo AS (
     LEFT JOIN DocumentMetadataVirtual dmv ON dmv.SiteId = s.SiteId
     LEFT JOIN DocumentMetadata dm ON dm.TopicId = dmv.TopicId
     LEFT JOIN Topic tr ON tr.TopicId = sm.Region AND tr.TopicType = 'Region'
+    LEFT JOIN Topic client ON client.TopicId = sm.SponsorId
     WHERE IndexPath LIKE '%eTMF%' 
       AND s.CreatedDate < EOMONTH(DATEADD(MONTH, -1, GETDATE()))
     GROUP BY s.SiteId, s.SiteName, s.StatusId, s.CreatedDate, ProjectCode, ProtocolNumber,
-             [Project Manager], tr.TopicName, ClientName, ClientType, [Billing.JobNumber], IndexPath
+             [Project Manager], tr.TopicName, sm.ClientType, [Billing.JobNumber], IndexPath,
+             client.TopicName
 )
 
 SELECT 
@@ -123,9 +125,10 @@ LEFT JOIN DocumentMetadataVirtual dmv ON dmv.TopicId = dm.TopicId
 LEFT JOIN Folder f ON f.FolderId = dmv.FolderId
 GROUP BY 
     RoomId, si.RoomName, RoomStatus, si.RoomCreationDate, ProjectCode, ProtocolNumber,
-    si.ProjectManager, si.Region, ClientName, si.ClientType, BillingJobNumber,
+    si.ProjectManager, si.Region, si.ClientType, BillingJobNumber,
     SiteIndexPath, DocumentUploadedinRoom, ism.[$AutoSiteName$], ismv.InvSiteName, 
-    ismv.CreatedDate, ism.SiteActivationDate, DocumentEverBeenCodedinRoom, DocumentEverBeenCodedinRoomByMonth
+    ismv.CreatedDate, ism.SiteActivationDate, DocumentEverBeenCodedinRoom, 
+    DocumentEverBeenCodedinRoomByMonth, si.TiClient
 ORDER BY RoomId, [$AutoSiteName$]]]>
 		</queryString>
 		<field name="RoomId" class="java.lang.Integer"/>
@@ -136,7 +139,7 @@ ORDER BY RoomId, [$AutoSiteName$]]]>
 		<field name="ProtocolNumber" class="java.lang.String"/>
 		<field name="ProjectManager" class="java.lang.String"/>
 		<field name="Region" class="java.lang.String"/>
-		<field name="ClientName" class="java.lang.String"/>
+		<field name="TiClient" class="java.lang.String"/>
 		<field name="ClientType" class="java.lang.String"/>
 		<field name="BillingJobNumber" class="java.lang.String"/>
 		<field name="SiteIndexPath" class="java.lang.String"/>
@@ -437,7 +440,7 @@ ORDER BY RoomId, [$AutoSiteName$]]]>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="12"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{ClientName}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{TiClient}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
