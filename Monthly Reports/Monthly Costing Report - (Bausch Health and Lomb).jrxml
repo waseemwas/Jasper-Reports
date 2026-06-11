@@ -145,6 +145,7 @@ SELECT
     ismv.CreatedDate,
     ism.SiteActivationDate,
     si.MdeEnabled,
+    iss.StatusName AS [Site Status],
     CASE 
         WHEN COUNT(dm.TopicId) > 1 THEN 'Y'
         ELSE 'N'
@@ -167,6 +168,9 @@ LEFT JOIN InvestigativeSiteMetadata ism
     ON ism.SiteId = si.RoomId
 LEFT JOIN InvestigativeSiteMetadataVirtual ismv
     ON ismv.InvSiteId = ism.TopicId
+LEFT JOIN InvestigativeSiteStatus iss
+    ON iss.SiteId = si.RoomId
+   AND iss.StatusTypeId = ism.StatusId
 LEFT JOIN DocumentMetadata dm
     ON dm.InvestigativeSiteId = ismv.DomainInvSiteId
 LEFT JOIN DocumentMetadataVirtual dmv
@@ -194,7 +198,8 @@ GROUP BY
     ismv.InvSiteName,
     ismv.CreatedDate,
     ism.SiteActivationDate,
-    si.MdeEnabled
+    si.MdeEnabled,
+    iss.StatusName
 ORDER BY
     si.RoomId,
     ism.[$AutoSiteName$]]]>
