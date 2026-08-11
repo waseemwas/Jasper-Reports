@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Workflow AllRooms Report" pageWidth="1800" pageHeight="842" orientation="Landscape" columnWidth="1780" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="1c742913-fd9d-4412-b648-80406e49e302">
 	<property name="net.sf.jasperreports.export.html.exclude.key.KeyUpd"/>
 	<property name="net.sf.jasperreports.export.csv.exclude.key.KeyUpd"/>
@@ -11,6 +11,10 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="ireport.jasperserver.url" value="https://mti-jr.trialinteractive.com/-/"/>
+	<property name="ireport.jasperserver.user" value="jasperadmin|Organization_1"/>
+	<property name="ireport.jasperserver.report.resource" value="/public/mti_jr.trialinteractive.com_public/Temp/Billing_reports_files/Billing_reports_"/>
+	<property name="ireport.jasperserver.reportUnit" value="/public/mti_jr.trialinteractive.com_public/Temp/Billing_reports"/>
 	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -47,124 +51,126 @@
 		<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false"/>
 		<parameter name="SITE_ID" class="java.lang.Long" isForPrompting="false"/>
 		<queryString language="SQL">
-			<![CDATA[													SELECT s.SiteId, 
-													s.SiteName, sm.ClientName, 
-													CASE 
-														WHEN s.StatusId = 2 THEN 'Inactive'
-														WHEN sm.[$IsClosed$] = 1 THEN 'Closed'
-														WHEN s.StatusId = 1 THEN 'Active'
+			<![CDATA[SELECT s.SiteId,
+											s.SiteName,
+											client.TopicName AS TiClient,
+											CASE
+												WHEN s.StatusId = 2 THEN 'Inactive'
+												WHEN sm.[$IsClosed$] = 1 THEN 'Closed'
+												WHEN s.StatusId = 1 THEN 'Active'
+												ELSE ''
+											END AS StudyStatus,
+											CASE WHEN ss.MdeEnabled = 1 THEN 'Yes' WHEN ss.MdeEnabled = 0 THEN 'No' END AS MdeEnabled,
+											ISNULL(WFStatusUnclaimed.QC1ApprovedDocuments,0) AS QC1ApprovedDocuments,
+											ISNULL(WFStatusUnclaimed.QC2ApprovedDocuments,0) AS QC2ApprovedDocuments,
+											ISNULL(WFStatusUnclaimed.QC1ClarificationDocuments,0) AS QC1ClarificationDocuments,
+											ISNULL(WFStatusUnclaimed.QC2ClarificationDocuments,0) AS QC2ClarificationDocuments,
+											ISNULL(WFStatus.QC1Rejected,0) AS QC1Rejected,
+											ISNULL(WFStatus.QC2Rejected,0) AS QC2Rejected,
+											ISNULL(WFQueriedDocs.QueriedDocuments,0) AS QueriedDocuments
+
+										FROM dbo.Site s
+										INNER JOIN dbo.SiteMetadata sm ON sm.SiteId = s.SiteId
+										LEFT JOIN dbo.Topic client ON client.TopicId = sm.SponsorId
+										LEFT JOIN (
+											SELECT dmv.SiteId, COUNT(*) AS SubmittedCount
+											FROM dbo.DocumentMetadataVirtual dmv
+											INNER JOIN Site s ON dmv.SiteId = s.SiteId
+											WHERE CAST(dmv.SubmittedOn AS DATE)
+												BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+												AND dmv.Deleted = 0
+											GROUP BY dmv.SiteId
+										) dmvSubmitted ON dmvSubmitted.SiteId = s.SiteId
+										LEFT JOIN (
+											SELECT dmv.SiteId, COUNT(dmv.IsFinal) AS FinalCount
+											FROM dbo.DocumentMetadataVirtual dmv
+											INNER JOIN Site s ON dmv.SiteId = s.SiteId
+											WHERE dmv.IsFinal = 1
+												AND CAST(dmv.SubmittedOn AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+												AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+											GROUP BY dmv.SiteId
+										) dmvSubmittedPublished ON dmvSubmittedPublished.SiteId = s.SiteId
+										LEFT JOIN (
+											SELECT dmv.SiteId, COUNT(*) AS PublishedCount
+											FROM dbo.DocumentMetadata dmv
+											INNER JOIN Site s ON dmv.SiteId = s.SiteId
+											WHERE CAST(dmv.PublishedDate AS DATE)
+												BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+											GROUP BY dmv.SiteId
+										) dmvPublished ON dmvPublished.SiteId = s.SiteId
+										LEFT JOIN (
+											SELECT dmv.SiteId,
+												SUM(CASE WHEN wst.StageNumber  = 1 THEN 1 ELSE 0 END ) AS QC1Rejected,
+												SUM(CASE WHEN wst.StageNumber  = 2 THEN 1 ELSE 0 END ) AS QC2Rejected
+											FROM DocumentMetadataVirtual dmv
+											INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = dmv.TopicId
+											LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId
+											INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId
+											INNER JOIN Site s ON dmv.SiteId = s.SiteId
+											WHERE dmv.[$$IsRejected$$] = 1
+												AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+											GROUP BY dmv.SiteId
+										) WFStatus ON WFStatus.SiteId = s.SiteId
+										LEFT JOIN (
+											SELECT wh.SiteId,
+												SUM(CASE WHEN wh.[status] = 'qc1 Approved' THEN 1 ELSE 0 END ) AS QC1ApprovedDocuments,
+												SUM(CASE WHEN wh.[status] = 'qc2 Approved' THEN 1 ELSE 0 END ) AS QC2ApprovedDocuments,
+												SUM(CASE WHEN wh.[status] = 'qc1 Clarification' THEN 1 ELSE 0 END) AS QC1ClarificationDocuments,
+												SUM(CASE WHEN wh.[status] = 'qc2 Clarification' THEN 1 ELSE 0 END) AS QC2ClarificationDocuments
+											FROM (
+												SELECT DISTINCT doc.SiteId, doc.TopicID,
+													CASE
+														WHEN st.TopicName IN ('Indexing Approved','Final') AND wst.StageNumber = 1 THEN 'qc1 Approved'
+														WHEN st.TopicName ='Final' AND wst.StageNumber = 2 THEN 'qc2 Approved'
+														WHEN st.TopicName IN ('Indexing Clarification','QC1 Clarification') AND wst.StageNumber = 1 THEN 'qc1 Clarification'
+														WHEN st.TopicName IN ('Review Clarification','QC2 Clarification') AND wst.StageNumber = 2 THEN 'qc2 Clarification'
 														ELSE ''
-													END AS StudyStatus,
-													CASE WHEN ss.MdeEnabled = 1 THEN 'Yes' WHEN ss.MdeEnabled = 0 THEN 'No' END AS MdeEnabled,
-													ISNULL(WFStatusUnclaimed.QC1ApprovedDocuments,0) AS QC1ApprovedDocuments,
-													ISNULL(WFStatusUnclaimed.QC2ApprovedDocuments,0) AS QC2ApprovedDocuments,
-													ISNULL(WFStatusUnclaimed.QC1ClarificationDocuments,0) AS QC1ClarificationDocuments,
-													ISNULL(WFStatusUnclaimed.QC2ClarificationDocuments,0) AS QC2ClarificationDocuments,
-													ISNULL(WFStatus.QC1Rejected,0) AS QC1Rejected,
-													ISNULL(WFStatus.QC2Rejected,0) AS QC2Rejected,
-													ISNULL(WFQueriedDocs.QueriedDocuments,0) AS QueriedDocuments
+													END AS [status]
+												FROM dbo.DocumentMetadata doc
+												INNER JOIN dbo.DocumentMetadataVirtual dmv ON dmv.TopicId = doc.TopicId
+												INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = doc.TopicId
+												LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId
+												INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId
+												LEFT JOIN dbo.Topic st ON st.TopicId = doc.DocumentStatusId
+												INNER JOIN Site s ON dmv.SiteId = s.SiteId
+												WHERE dmv.Deleted = 0 AND dmv.Purged = 0
+												AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+											) wh
+											GROUP BY wh.SiteId
+										) WFStatusUnclaimed ON WFStatusUnclaimed.SiteId = s.SiteId
+										LEFT JOIN (
+											SELECT wq.SiteId,
+											COUNT(wq.DocQuery) AS QueriedDocuments
+											FROM (
+												SELECT DISTINCT doc.SiteId, doc.TopicID,
+													wq.QueryId AS DocQuery
+												FROM dbo.DocumentMetadata doc
+												INNER JOIN dbo.DocumentMetadataVirtual dmv ON dmv.TopicId = doc.TopicId
+												INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = doc.TopicId
+												LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId
+												INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId
+												LEFT JOIN dbo.WorkflowQuery wq ON wq.SiteId = dmv.SiteId AND doc.TopicId = wq.DocumentId
+												WHERE dmv.Deleted = 0 AND dmv.Purged = 0
+													AND wq.QueryDate BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1) AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+													AND wq.QueryType = 'Workflow'
+											) wq
+											GROUP BY wq.SiteId
+										) WFQueriedDocs ON WFQueriedDocs.SiteId = s.SiteId
+										INNER JOIN SiteCategory sc ON sc.SiteCategoryId = sm.SiteCategoryId
+										LEFT JOIN SiteSettings ss ON ss.SiteId = sm.SiteId
 
-												FROM dbo.Site s
-												INNER JOIN dbo.SiteMetadata sm ON sm.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT dmv.SiteId, COUNT(*) AS SubmittedCount
-													FROM dbo.DocumentMetadataVirtual dmv 
-													INNER JOIN Site s ON dmv.SiteId = s.SiteId
-													WHERE CAST(dmv.SubmittedOn AS DATE) 
-														BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-														AND dmv.Deleted = 0
-													GROUP BY dmv.SiteId
-												) dmvSubmitted ON dmvSubmitted.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT dmv.SiteId, COUNT(dmv.IsFinal) AS FinalCount
-													FROM dbo.DocumentMetadataVirtual dmv 
-													INNER JOIN Site s ON dmv.SiteId = s.SiteId
-													WHERE dmv.IsFinal = 1
-														AND CAST(dmv.SubmittedOn AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-														AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-													GROUP BY dmv.SiteId
-												) dmvSubmittedPublished ON dmvSubmittedPublished.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT dmv.SiteId, COUNT(*) AS PublishedCount
-													FROM dbo.DocumentMetadata dmv 
-													INNER JOIN Site s ON dmv.SiteId = s.SiteId
-													WHERE CAST(dmv.PublishedDate AS DATE) 
-														BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-													GROUP BY dmv.SiteId
-												) dmvPublished ON dmvPublished.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT dmv.SiteId, 
-														SUM(CASE WHEN wst.StageNumber  = 1 THEN 1 ELSE 0 END ) AS QC1Rejected,
-														SUM(CASE WHEN wst.StageNumber  = 2 THEN 1 ELSE 0 END ) AS QC2Rejected
-													FROM DocumentMetadataVirtual dmv
-													INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = dmv.TopicId
-													LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId 
-													INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId 
-													INNER JOIN Site s ON dmv.SiteId = s.SiteId
-													WHERE dmv.[$$IsRejected$$] = 1 
-														AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-													GROUP BY dmv.SiteId
-												) WFStatus ON WFStatus.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT wh.SiteId, 
-														SUM(CASE WHEN wh.[status] = 'qc1 Approved' THEN 1 ELSE 0 END ) AS QC1ApprovedDocuments,
-														SUM(CASE WHEN wh.[status] = 'qc2 Approved' THEN 1 ELSE 0 END ) AS QC2ApprovedDocuments,
-														SUM(CASE WHEN wh.[status] = 'qc1 Clarification' THEN 1 ELSE 0 END) AS QC1ClarificationDocuments,
-														SUM(CASE WHEN wh.[status] = 'qc2 Clarification' THEN 1 ELSE 0 END) AS QC2ClarificationDocuments
-													FROM (
-														SELECT DISTINCT doc.SiteId, doc.TopicID, 
-															CASE 
-																WHEN st.TopicName IN ('Indexing Approved','Final') AND wst.StageNumber = 1 THEN 'qc1 Approved'
-																WHEN st.TopicName ='Final' AND wst.StageNumber = 2 THEN 'qc2 Approved'
-																WHEN st.TopicName IN ('Indexing Clarification','QC1 Clarification') AND wst.StageNumber = 1 THEN 'qc1 Clarification'
-																WHEN st.TopicName IN ('Review Clarification','QC2 Clarification') AND wst.StageNumber = 2 THEN 'qc2 Clarification' 
-																ELSE '' 
-															END AS [status]                                                                
-														FROM dbo.DocumentMetadata doc
-														INNER JOIN dbo.DocumentMetadataVirtual dmv ON dmv.TopicId = doc.TopicId
-														INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = doc.TopicId
-														LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId 
-														INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId 
-														LEFT JOIN dbo.Topic st ON st.TopicId = doc.DocumentStatusId
-														INNER JOIN Site s ON dmv.SiteId = s.SiteId
-														WHERE dmv.Deleted = 0 AND dmv.Purged = 0
-														AND CAST(dmv.CurrentStageDate AS DATE) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
-    AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-													) wh
-													GROUP BY wh.SiteId
-												) WFStatusUnclaimed ON WFStatusUnclaimed.SiteId = s.SiteId
-												LEFT JOIN (
-													SELECT wq.SiteId,
-													COUNT(wq.DocQuery) AS QueriedDocuments
-													FROM (
-														SELECT DISTINCT doc.SiteId, doc.TopicID,
-															wq.QueryId AS DocQuery                                                                
-														FROM dbo.DocumentMetadata doc
-														INNER JOIN dbo.DocumentMetadataVirtual dmv ON dmv.TopicId = doc.TopicId
-														INNER JOIN dbo.WorkflowLog wl ON wl.DocumentId = doc.TopicId
-														LEFT JOIN dbo.WorkflowStageStatus ws ON ws.WorkflowStatusId = wl.CurrentStatusId AND ws.StageId =  wl.CurrentStageId 
-														INNER JOIN dbo.WorkflowStage wst ON wst.StageId = wl.CurrentStageId 
-														LEFT JOIN dbo.WorkflowQuery wq ON wq.SiteId = dmv.SiteId AND doc.TopicId = wq.DocumentId
-														WHERE dmv.Deleted = 0 AND dmv.Purged = 0 
-															AND wq.QueryDate BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1) AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
-															AND wq.QueryType = 'Workflow'
-													) wq
-													GROUP BY wq.SiteId
-												) WFQueriedDocs ON WFQueriedDocs.SiteId = s.SiteId
-												INNER JOIN SiteCategory sc ON sc.SiteCategoryId = sm.SiteCategoryId
-												LEFT JOIN SiteSettings ss ON ss.SiteId = sm.SiteId
-
-												WHERE s.SiteTypeId = 1 AND s.StatusId = 1
-												ORDER BY s.SiteName]]>
+										WHERE s.SiteTypeId = 1 AND s.StatusId = 1
+										ORDER BY s.SiteName]]>
 		</queryString>
 		<field name="SiteId" class="java.lang.Integer"/>
 		<field name="SiteName" class="java.lang.String"/>
-		<field name="ClientName" class="java.lang.String"/>
+		<field name="TiClient" class="java.lang.String"/>
 		<field name="StudyStatus" class="java.lang.String"/>
 		<field name="MdeEnabled" class="java.lang.String"/>
 		<field name="QC1ApprovedDocuments" class="java.lang.Integer"/>
@@ -311,7 +317,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="SansSerif" size="12"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{ClientName}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{TiClient}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
