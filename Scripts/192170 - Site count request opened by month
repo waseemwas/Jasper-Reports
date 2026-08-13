@@ -1,0 +1,111 @@
+DECLARE @SiteId INT = 6391;
+
+;WITH SiteType AS
+(
+    SELECT TopicTypeId
+    FROM dbo.TopicType
+    WHERE TypeName = 'InvestigativeSiteInDataRoom'
+),
+
+InvestigativeSites AS
+(
+    SELECT
+        t.TopicId AS InvSiteId,
+        t.SiteId,
+        pt.TopicName AS InvestigatorSiteName,
+        t.CreatedDate AS SiteOpenedDate,
+        DATEFROMPARTS(
+            YEAR(t.CreatedDate),
+            MONTH(t.CreatedDate),
+            1
+        ) AS OpenedMonth
+    FROM dbo.Topic t
+    INNER JOIN dbo.Topic pt
+        ON pt.TopicId = t.ParentId
+    INNER JOIN SiteType st
+        ON st.TopicTypeId = t.TopicTypeId
+    WHERE t.SiteId = @SiteId
+      AND t.CreatedDate IS NOT NULL
+),
+
+MonthlySites AS
+(
+    SELECT
+        OpenedMonth,
+        COUNT(DISTINCT InvSiteId) AS SitesOpened,
+        STRING_AGG(InvestigatorSiteName, ', ') AS SiteNames
+    FROM InvestigativeSites
+    GROUP BY OpenedMonth
+),
+
+MonthlyDocuments AS
+(
+    SELECT
+        DATEFROMPARTS(
+            YEAR(w.SubmittedDate),
+            MONTH(w.SubmittedDate),
+            1
+        ) AS SubmittedMonth
+    FROM dbo.WorkflowLog w
+    WHERE w.SiteId = @SiteId
+      AND w.SubmittedDate IS NOT NULL
+    GROUP BY
+        DATEFROMPARTS(
+            YEAR(w.SubmittedDate),
+            MONTH(w.SubmittedDate),
+            1
+        )
+),
+
+DateRange AS
+(
+    SELECT
+        MIN(OpenedMonth) AS FirstMonth,
+        DATEFROMPARTS(
+            YEAR(GETDATE()),
+            MONTH(GETDATE()),
+            1
+        ) AS LastMonth
+    FROM InvestigativeSites
+),
+
+Months AS
+(
+    SELECT FirstMonth AS ReportMonth
+    FROM DateRange
+    WHERE FirstMonth IS NOT NULL
+
+    UNION ALL
+
+    SELECT DATEADD(MONTH, 1, m.ReportMonth)
+    FROM Months m
+    CROSS JOIN DateRange d
+    WHERE m.ReportMonth < d.LastMonth
+)
+
+SELECT
+    YEAR(m.ReportMonth) AS [Year],
+    MONTH(m.ReportMonth) AS [MonthNumber],
+    DATENAME(MONTH, m.ReportMonth) AS [Month],
+    CONVERT(VARCHAR(7), m.ReportMonth, 120) AS [YearMonth],
+
+    ISNULL(ms.SitesOpened, 0) AS [SitesOpened],
+
+    ISNULL(ms.SiteNames, '') AS [SiteNames],
+
+    CASE
+        WHEN md.SubmittedMonth IS NOT NULL THEN 'Yes'
+        ELSE 'No'
+    END AS [DocumentsSubmitted]
+
+FROM Months m
+
+LEFT JOIN MonthlySites ms
+    ON ms.OpenedMonth = m.ReportMonth
+
+LEFT JOIN MonthlyDocuments md
+    ON md.SubmittedMonth = m.ReportMonth
+
+ORDER BY m.ReportMonth
+
+OPTION (MAXRECURSION 0);
