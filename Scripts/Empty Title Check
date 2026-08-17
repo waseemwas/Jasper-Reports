@@ -1,0 +1,3 @@
+select * from DocumentMetadatavirtual
+where title = ''
+order by submittedon desc
