@@ -1,0 +1,18 @@
+SELECT
+    sud.[FullName]        AS [User Name],
+    sud.[EmailAddress]    AS [User Email],
+    sud.[SiteName]        AS [Room Name],
+    sud.[SiteId]          AS [Room ID],
+    sud.[$$RoleName$$]    AS [Access Level],
+    sud.[$$Groups$$]      AS [Groups],
+    sud.[$$Actions$$]     AS [Actions]
+FROM [dbo].[vw_SiteUserData] sud
+INNER JOIN dbo.[User] u
+    ON u.UserId = sud.UserId
+INNER JOIN dbo.UserMetadataVirtual umv
+    ON umv.UserId = u.UserId AND umv.SiteId = sud.SiteId
+WHERE ISNULL(umv.RoleLevel, 0) < 500
+    AND sud.SiteName <> 'System'
+    AND u.[Status] = 'Active'
+    AND sud.[EmailAddress] IN ('jcarreu@ctifacts.com', 'jnferreira@ctifacts.com')
+ORDER BY sud.[EmailAddress], sud.[SiteName];
