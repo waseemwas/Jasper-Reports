@@ -1,0 +1,34 @@
+SELECT 
+    sud.SiteName AS [Room Name],
+    [$$InvitedOn$$] AS [Invited On],                                   -- VERIFY
+    LTRIM(RTRIM(CONCAT(sud.FirstName, ' ', sud.LastName))) AS [User Full Name],
+    sud.EmailAddress AS [User Email Address],
+    [$$InvitedBy$$] AS [Invited By],
+    [$$OrganizationName$$] AS [Organization],
+    [$$RoleName$$] AS [Current Access Level],
+    [$$Actions$$] AS [Actions],                                        -- VERIFY
+    [$$Groups$$] AS [Groups],                                          -- VERIFY
+    [$$LastVisit$$] AS [Last Visit Date],                          -- VERIFY
+    [$$AccessRevokedOn$$] AS [Access Revoked On],                      -- VERIFY
+    [$$AccessRevokedBy$$] AS [Access Revoked By]                       -- VERIFY
+FROM vw_SiteUserData sud 
+INNER JOIN dbo.[User] u 
+    ON u.UserId = sud.UserId
+INNER JOIN dbo.UserMetadataVirtual umv 
+    ON umv.UserId = u.UserId 
+    AND umv.SiteId = sud.SiteId
+WHERE ISNULL(umv.RoleLevel, 0) < 500 
+AND sud.SiteName <> 'System' 
+AND [$$InvitedBy$$] <> 'API Service' 
+AND sud.UserName NOT LIKE '%contact.ct%'
+AND NOT EXISTS (
+    SELECT 1 
+    FROM [dbo].[InvestigativeSiteContacts] isc 
+    WHERE isc.SiteID = sud.[SiteId] 
+    AND isc.ContactId = sud.UserId
+) 
+--AND [$$OrganizationName$$] LIKE '%bausch.com%'
+AND sud.[$$SponsorId$$] = 724
+ORDER BY sud.SiteName, sud.LastName, sud.FirstName;
+
+
