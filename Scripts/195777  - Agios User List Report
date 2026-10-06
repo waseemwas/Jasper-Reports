@@ -1,0 +1,28 @@
+SELECT 
+sud.FirstName AS [First Name],
+sud.LastName AS [Last Name],
+sud.EmailAddress AS [Email],
+sud.SiteName AS [Room Name],
+sud.SiteId AS [Room ID],
+[$$RoleName$$] AS [Role],
+CASE sud.[$PersonnelTypeId$]
+    WHEN 1 THEN 'Sponsor'
+    WHEN 2 THEN 'Contract Research Organization'
+    WHEN 3 THEN 'Investigative Site'
+    WHEN 4 THEN 'Supplier'
+    WHEN 5 THEN 'Agency'
+    WHEN 6 THEN 'Third Party'
+    WHEN 7 THEN 'Other'
+    ELSE 'Not Set'
+END AS [Personnel Type]
+FROM vw_SiteUserData sud 
+INNER JOIN dbo.[User] u ON u.UserId = sud.UserId
+INNER JOIN dbo.UserMetadataVirtual umv ON umv.UserId = u.UserId AND umv.SiteId = sud.SiteId
+WHERE ISNULL(umv.RoleLevel, 0) < 500 
+AND sud.SiteName <> 'System' 
+AND [$$InvitedBy$$] <> 'API Service' 
+AND sud.UserName NOT LIKE '%contact.ct%'
+AND NOT EXISTS (SELECT * FROM [dbo].[InvestigativeSiteContacts] isc WHERE isc.SiteID = sud.[SiteId] AND isc.ContactId = sud.UserId) 
+--AND [$$OrganizationName$$] LIKE '%Caidya%'
+AND sud.[$$SponsorId$$] = 6037826
+ORDER BY sud.SiteName, sud.LastName, sud.FirstName
