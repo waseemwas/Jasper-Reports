@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Monthly Costing Reports" pageWidth="4590" pageHeight="842" orientation="Landscape" columnWidth="4550" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cedb548c-0df4-4676-a752-f860ccaa217e">
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Monthly Costing Reports" pageWidth="4700" pageHeight="842" columnWidth="4660" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cedb548c-0df4-4676-a752-f860ccaa217e">
 	<property name="net.sf.jasperreports.export.html.exclude.key.KeyUpd"/>
 	<property name="net.sf.jasperreports.export.csv.exclude.key.KeyUpd"/>
 	<property name="net.sf.jasperreports.export.html.exclude.key.Logo"/>
@@ -11,10 +10,14 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="ireport.jasperserver.url" value="https://mti-jr.trialinteractive.com/-/"/>
-	<property name="ireport.jasperserver.user" value="jasperadmin|organization_1"/>
-	<property name="ireport.jasperserver.report.resource" value="/public/mti_jr.trialinteractive.com_public/Reports/Monthly_Costing_Report_files/Monthly_Costing_Report_"/>
-	<property name="ireport.jasperserver.reportUnit" value="/public/mti_jr.trialinteractive.com_public/Reports/Monthly_Costing_Report"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#349CDA">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -56,7 +59,85 @@
 			<defaultValueExpression><![CDATA[222L]]></defaultValueExpression>
 		</parameter>
 		<queryString language="SQL">
-			<![CDATA[exec [dbo].[Report_Monthly_Costing] @UserId = 2, @StartDate = '2024-05-01', @EndDate = '2024-06-01']]>
+			<![CDATA[WITH SiteInfo AS (
+    SELECT 
+        s.SiteId AS RoomId, 
+        s.SiteName AS RoomName, 
+        CASE 
+            WHEN s.StatusId = 1 THEN 'Published' 
+            WHEN s.StatusId = 2 THEN 'Unpublished' 
+        END AS RoomStatus,
+        s.CreatedDate AS RoomCreationDate, 
+        ProjectCode, 
+        ProtocolNumber, 
+        sm.ProjectManager,                          -- ✅ fixed
+        tr.TopicName AS Region, 
+        sm.ClientType, 
+        [Billing.JobNumber] AS BillingJobNumber,
+        IndexPath AS SiteIndexPath,
+        client.TopicName AS TiClient,
+        CASE WHEN COUNT(dmv.TopicId) > 1 THEN 'Y' ELSE 'N' END AS DocumentUploadedinRoom,
+        CASE 
+            WHEN COUNT(dm.TopicId) > 1 AND COUNT(dm.DocumentTypeId) > 1 THEN 'Y' 
+            ELSE 'N' 
+        END AS DocumentEverBeenCodedinRoom,
+        CASE 
+            WHEN COUNT(dm.TopicId) > 1 AND COUNT(dm.DocumentTypeId) > 1 
+                AND MAX(dmv.SubmittedOn) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+                AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+            THEN 'Y' 
+            ELSE 'N' 
+        END AS DocumentEverBeenCodedinRoomByMonth
+    FROM SiteMetadata sm
+    INNER JOIN Site s ON s.SiteId = sm.SiteId
+    INNER JOIN SiteCategory sc ON sc.SiteCategoryId = sm.SiteCategoryId
+    INNER JOIN SiteSettings ss ON ss.SiteId = s.SiteId
+    LEFT JOIN DocumentMetadataVirtual dmv ON dmv.SiteId = s.SiteId
+    LEFT JOIN DocumentMetadata dm ON dm.TopicId = dmv.TopicId
+    LEFT JOIN Topic tr ON tr.TopicId = sm.Region AND tr.TopicType = 'Region'
+    LEFT JOIN Topic client ON client.TopicId = sm.SponsorId
+    WHERE IndexPath LIKE '%eTMF%' 
+      AND s.CreatedDate < EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+    GROUP BY s.SiteId, s.SiteName, s.StatusId, s.CreatedDate, ProjectCode, ProtocolNumber,
+             sm.ProjectManager, tr.TopicName, sm.ClientType, [Billing.JobNumber], IndexPath,  -- ✅ fixed
+             client.TopicName
+)
+
+SELECT 
+    (SELECT MAX(CreatedDate) FROM RefreshingLog) AS [Data Refresh Time], 
+    si.*, 
+    ism.[$AutoSiteName$], 
+    ismv.InvSiteName, 
+    ismv.CreatedDate, 
+    ism.SiteActivationDate,
+    iss.StatusName AS [Site Status],
+    CASE WHEN COUNT(dm.TopicId) > 1 THEN 'Y' ELSE 'N' END AS [Documents Coded for Sites],
+    CASE 
+        WHEN COUNT(dm.TopicId) > 1 
+             AND MAX(dmv.SubmittedOn) BETWEEN DATEFROMPARTS(YEAR(DATEADD(MONTH, -1, GETDATE())), MONTH(DATEADD(MONTH, -1, GETDATE())), 1)
+             AND EOMONTH(DATEADD(MONTH, -1, GETDATE()))
+        THEN 'Y' 
+        ELSE 'N' 
+    END AS [Document Coded per Sites in Month]
+FROM SiteInfo si 
+LEFT JOIN InvestigativeSiteMetadata ism ON ism.SiteId = si.RoomId
+LEFT JOIN InvestigativeSiteMetadataVirtual ismv ON ismv.InvSiteId = ism.TopicId
+
+-- Added Site Status join
+LEFT JOIN InvestigativeSiteStatus iss 
+    ON iss.SiteId = si.RoomId
+   AND iss.StatusTypeId = ism.StatusId
+
+LEFT JOIN DocumentMetadata dm ON dm.InvestigativeSiteId = ismv.DomainInvSiteId
+LEFT JOIN DocumentMetadataVirtual dmv ON dmv.TopicId = dm.TopicId
+LEFT JOIN Folder f ON f.FolderId = dmv.FolderId
+GROUP BY 
+    RoomId, si.RoomName, RoomStatus, si.RoomCreationDate, ProjectCode, ProtocolNumber,
+    si.ProjectManager, si.Region, si.ClientType, BillingJobNumber,
+    SiteIndexPath, DocumentUploadedinRoom, ism.[$AutoSiteName$], ismv.InvSiteName, 
+    ismv.CreatedDate, ism.SiteActivationDate, iss.StatusName, DocumentEverBeenCodedinRoom, 
+    DocumentEverBeenCodedinRoomByMonth, si.TiClient
+ORDER BY RoomId, [$AutoSiteName$]]]>
 		</queryString>
 		<field name="RoomId" class="java.lang.Integer"/>
 		<field name="RoomName" class="java.lang.String"/>
@@ -66,7 +147,7 @@
 		<field name="ProtocolNumber" class="java.lang.String"/>
 		<field name="ProjectManager" class="java.lang.String"/>
 		<field name="Region" class="java.lang.String"/>
-		<field name="ClientName" class="java.lang.String"/>
+		<field name="TiClient" class="java.lang.String"/>
 		<field name="ClientType" class="java.lang.String"/>
 		<field name="BillingJobNumber" class="java.lang.String"/>
 		<field name="SiteIndexPath" class="java.lang.String"/>
@@ -80,6 +161,7 @@
 		<field name="SiteActivationDate" class="java.sql.Timestamp"/>
 		<field name="Documents Coded for Sites" class="java.lang.String"/>
 		<field name="Document Coded per Sites in Month" class="java.lang.String"/>
+		<field name="Site Status" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="USER_ID" class="java.lang.Integer" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new net.trialinteractive.auth.ResolveAttribute().getInt("USER_ID")]]></defaultValueExpression>
@@ -138,7 +220,7 @@
 	<detail>
 		<band height="101" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="5" width="4460" height="90" uuid="548ad812-b88e-4ad2-a15a-c0cccc036410"/>
+				<reportElement x="0" y="5" width="4580" height="90" uuid="548ad812-b88e-4ad2-a15a-c0cccc036410"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Dataset1" uuid="46ff89e6-f33d-41d6-ac02-dca63506f760">
 						<datasetParameter name="SITE_ID">
@@ -149,12 +231,12 @@
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:columnGroup width="4460" uuid="7fea2de3-1298-4a15-84db-6d47bfd5bc04">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [22]"/>
+					<jr:columnGroup width="4580" uuid="7fea2de3-1298-4a15-84db-6d47bfd5bc04">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [23]"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<jr:tableFooter height="30" rowSpan="1">
 							<staticText>
-								<reportElement mode="Opaque" x="0" y="0" width="4460" height="30" forecolor="#0A0A0A" backcolor="#FF5C59" uuid="9be04f26-3c99-48e6-a10e-889e54b49355">
+								<reportElement mode="Opaque" x="0" y="0" width="4580" height="30" forecolor="#0A0A0A" backcolor="#FF5C59" uuid="9be04f26-3c99-48e6-a10e-889e54b49355">
 									<printWhenExpression><![CDATA[$V{REPORT_COUNT}==0]]></printWhenExpression>
 								</reportElement>
 								<box>
@@ -367,7 +449,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="12"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{ClientName}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{TiClient}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -568,8 +650,29 @@
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="160" uuid="8bf0368f-482c-4a08-85b8-c04831f7cab0">
+						<jr:column width="120" uuid="4918a6dc-4992-494b-a931-1ed0d00d4d1f">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+							<jr:columnHeader style="Table_CH" height="30">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" forecolor="#FFFFFF" uuid="7c6db1c5-ba9b-4047-ab08-9e2a8a20721f"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12" isBold="true"/>
+									</textElement>
+									<text><![CDATA[Site Status]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+									<reportElement x="0" y="0" width="120" height="30" uuid="62a21716-6e12-448f-8b80-829b87eeea2b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="12"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{Site Status}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="160" uuid="8bf0368f-482c-4a08-85b8-c04831f7cab0">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
 							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="160" height="30" forecolor="#FFFFFF" uuid="b3b9603b-bf35-429b-8e70-ebf5f7266dbc"/>
@@ -590,7 +693,7 @@
 							</jr:detailCell>
 						</jr:column>
 						<jr:column width="150" uuid="7d1ff7c5-5da9-4aa0-a67a-a8f5a0d7e5e9">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
 							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="150" height="30" forecolor="#FFFFFF" uuid="eeedb394-ee24-4ac4-8b13-bcfd3f0c039c"/>
@@ -601,7 +704,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<textField isStretchWithOverflow="true" pattern="DDMMMYYYY" isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="150" height="30" uuid="10c7704c-248a-4260-bc80-65dadde0129f"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font size="12"/>
@@ -611,7 +714,7 @@
 							</jr:detailCell>
 						</jr:column>
 						<jr:column width="200" uuid="9d09822a-6919-49be-b3c7-ba5ec2808a89">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
 							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="200" height="30" forecolor="#FFFFFF" uuid="c3169357-d679-4b69-8572-2db26e06ca6c"/>
@@ -632,7 +735,7 @@
 							</jr:detailCell>
 						</jr:column>
 						<jr:column width="220" uuid="b6437d43-7876-4496-96ab-d1d947deee31">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column22"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column23"/>
 							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="220" height="30" forecolor="#FFFFFF" uuid="f1aa9b74-175d-47ae-88c4-74572414c48f"/>
@@ -667,14 +770,14 @@
 				<textFieldExpression><![CDATA["Updated on: " + new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss a (z Z) zzzz").format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="4040" y="10" width="200" height="20" uuid="ff9fbf1c-a63c-4322-9e2a-75a8534e69cb"/>
+				<reportElement x="4160" y="10" width="200" height="20" uuid="ff9fbf1c-a63c-4322-9e2a-75a8534e69cb"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page: "+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" evaluationTime="Report" isBlankWhenNull="true">
-				<reportElement x="4240" y="10" width="220" height="20" uuid="934f39d8-0422-4790-9a40-0b4e7f96e82e"/>
+				<reportElement x="4360" y="10" width="220" height="20" uuid="934f39d8-0422-4790-9a40-0b4e7f96e82e"/>
 				<textElement textAlignment="Right">
 					<font size="12"/>
 				</textElement>
