@@ -1,0 +1,54 @@
+WITH Rooms AS
+(
+    SELECT x.SiteId
+    FROM (
+        SELECT DISTINCT wl.SiteId
+        FROM dbo.WorkflowLog wl
+        WHERE wl.SiteId IS NOT NULL
+    ) x
+    WHERE x.SiteId <> dbo.GetSystemSiteId(x.SiteId)
+),
+WLA AS
+(
+    SELECT wsl.WorkflowLogId, MAX(wsl.StartDate) AS LastApproved
+    FROM dbo.WorkflowStageLog wsl
+    WHERE wsl.UserActivityTypeId = 130          -- 'Workflow: Approve'
+    GROUP BY wsl.WorkflowLogId
+),
+DocFinal AS
+(
+    SELECT
+        wl.SiteId,
+        wl.TopicId            AS DocumentId,
+        MIN(wla.LastApproved) AS FirstFinalDate
+    FROM dbo.WorkflowLog wl
+    INNER JOIN Rooms r
+        ON r.SiteId = wl.SiteId
+    INNER JOIN WLA wla
+        ON wla.WorkflowLogId = wl.WorkflowLogId
+    INNER JOIN dbo.WorkflowStatus ws
+        ON ws.WorkflowStatusId = wl.WorkflowStatusId
+    INNER JOIN dbo.WorkflowStatusType wst
+        ON wst.WorkflowStatusTypeId = ws.WorkflowStatusTypeId
+       AND wst.TypeName = N'Approved'
+    INNER JOIN dbo.Topic dt
+        ON dt.TopicId = wl.TopicId
+       AND dt.SiteId = wl.SiteId
+    INNER JOIN dbo.TopicType tt
+        ON tt.TopicTypeId = dt.TopicTypeId
+       AND tt.TypeName IN (N'Document', N'ReviewDocument')
+    GROUP BY wl.SiteId, wl.TopicId
+)
+SELECT
+    df.SiteId,
+    s.SiteName,
+    SUM(CASE WHEN YEAR(df.FirstFinalDate) = 2025 THEN 1 ELSE 0 END) AS [2025],
+    SUM(CASE WHEN YEAR(df.FirstFinalDate) = 2026 THEN 1 ELSE 0 END) AS [2026 YTD],
+    COUNT(*)                                                         AS Total
+FROM DocFinal df
+LEFT JOIN dbo.Site s
+    ON s.SiteId = df.SiteId
+WHERE df.FirstFinalDate >= '2025-01-01'
+  AND df.FirstFinalDate <  GETUTCDATE()
+GROUP BY df.SiteId, s.SiteName
+ORDER BY Total DESC;
